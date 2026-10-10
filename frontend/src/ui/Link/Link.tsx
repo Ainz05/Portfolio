@@ -24,7 +24,9 @@ export function Link({ href, variant = 'text', newTabLabel, children }: LinkProp
     // does not look clickable.
     return <span className={styles.plainText}>{children}</span>;
   }
-  const opensNewTab = newTabLabel !== undefined && isExternalHttpsUrl(safeHref);
+  // A blank label would open a tab without announcing it: stay in the same tab instead.
+  const hasLabel = newTabLabel !== undefined && newTabLabel.trim() !== '';
+  const opensNewTab = hasLabel && isExternalHttpsUrl(safeHref);
   return (
     <a
       href={safeHref}

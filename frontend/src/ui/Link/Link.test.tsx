@@ -24,6 +24,27 @@ describe('Link', () => {
     expect(link).not.toHaveAttribute('rel');
   });
 
+  it.each(['', '   '])('stays in the same tab for the blank label %j', (label) => {
+    render(
+      <Link href="https://example.com" newTabLabel={label}>
+        Site
+      </Link>,
+    );
+    const link = screen.getByRole('link', { name: 'Site' });
+    expect(link).not.toHaveAttribute('target');
+    expect(link).not.toHaveAttribute('rel');
+  });
+
+  it('renders the normalized https form of the href', () => {
+    render(<Link href="HTTPS://Example.com">Site</Link>);
+    expect(screen.getByRole('link')).toHaveAttribute('href', 'https://example.com/');
+  });
+
+  it('renders the normalized mailto form of the href', () => {
+    render(<Link href="mailto:a%40example.com">Écrire</Link>);
+    expect(screen.getByRole('link')).toHaveAttribute('href', 'mailto:a@example.com');
+  });
+
   it('never adds target or rel to a valid mailto link', () => {
     render(
       <Link href="mailto:a@example.com?subject=Salut" newTabLabel={NEW_TAB}>
