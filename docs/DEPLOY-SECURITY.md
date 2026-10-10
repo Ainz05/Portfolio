@@ -11,7 +11,7 @@ Hypothèse : le site est servi à la **racine d'un domaine** (`https://<domaine>
 ## En-têtes exigés sur toutes les réponses
 
 ```
-Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
 Strict-Transport-Security: max-age=31536000; includeSubDomains
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
@@ -26,11 +26,12 @@ Notes :
 - `X-Frame-Options: DENY` double `frame-ancestors 'none'` pour les navigateurs anciens.
 - `Cross-Origin-Resource-Policy: same-origin` est cohérent tant qu'aucun autre site n'intègre les ressources de celui-ci (pas d'image de partage hébergée ici et chargée ailleurs sans test préalable).
 - Si l'hébergeur ne permet pas de poser des en-têtes, ajouter une balise `<meta http-equiv="Content-Security-Policy">` dans `index.html` en secours (elle ne gère pas `frame-ancestors`), et le noter comme limite dans l'audit.
+- `img-src 'self'` exclut `data:` : si un besoin d'image apparaît, préférer un fichier dans `assets/` plutôt qu'une URL `data:`.
 - Ajouter `preload` à HSTS seulement quand le domaine et ses sous-domaines sont durablement en HTTPS.
+- `includeSubDomains` impose HTTPS à **tous** les sous-domaines du domaine : le retirer si d'autres sous-domaines non HTTPS existent sur le VPS.
+- La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles de style externes, aucun inline). Si une dépendance future ajoute du JS ou du CSS inline, corriger le code plutôt qu'assouplir la CSP.
 
 ## Exemples de configuration
-
-La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles de style externes, aucun inline). Si une dépendance future ajoute du JS ou du CSS inline, corriger le code plutôt qu'assouplir la CSP.
 
 ### Netlify / Cloudflare Pages : fichier `_headers` (alternative non retenue)
 
@@ -38,7 +39,7 @@ La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles d
 
 ```
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -65,7 +66,7 @@ La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles d
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests" },
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
@@ -90,7 +91,7 @@ Les directives `add_header` d'un bloc `location` **remplacent** celles héritée
 `/etc/nginx/security_headers.conf` :
 
 ```nginx
-add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests" always;
 add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 add_header X-Content-Type-Options "nosniff" always;
 add_header X-Frame-Options "DENY" always;
@@ -105,13 +106,33 @@ Configuration du site :
 ```nginx
 server_tokens off;
 
+# Limitation de débit (optionnelle) : la zone se déclare dans le contexte http.
+# limit_req_zone $binary_remote_addr zone=site:10m rate=20r/s;
+
+# Serveurs fourre-tout : toute requête dont l'hôte (ou l'IP) n'est pas <domaine> est refusée.
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  return 444;
+}
+
+server {
+  listen 443 ssl default_server;
+  listen [::]:443 ssl default_server;
+  ssl_reject_handshake on;   # Nginx >= 1.19.4 ; aucun certificat requis ici
+}
+
 server {
   listen 80;
+  listen [::]:80;
   server_name <domaine>;
 
   # Certbot (mode webroot) : le défi ACME doit rester servi en HTTP, avant la redirection.
+  # Webroot dédié (/var/www/certbot), jamais la racine du site.
   location ^~ /.well-known/acme-challenge/ {
-    root <webroot certbot>;
+    root /var/www/certbot;
+    default_type text/plain;
+    try_files $uri =404;
   }
 
   location / {
@@ -122,38 +143,51 @@ server {
 
 server {
   listen 443 ssl;
+  listen [::]:443 ssl;
   http2 on;   # Nginx >= 1.25.1 ; sinon : listen 443 ssl http2;
   server_name <domaine>;
 
   ssl_certificate     /path/to/fullchain.pem;
   ssl_certificate_key /path/to/privkey.pem;
   ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_prefer_server_ciphers off;   # profil Mozilla « intermediate »
+  ssl_session_timeout 1d;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_tickets off;
 
   root /usr/share/nginx/html;   # contenu de dist/ uniquement
   index index.html;
   autoindex off;
+  client_max_body_size 1k;      # site statique : aucun corps de requête utile
+
+  # limit_req zone=site burst=40 nodelay;
 
   include /etc/nginx/security_headers.conf;
 
   location / {
+    limit_except GET { deny all; }   # GET (et HEAD) seulement
     try_files $uri $uri/ =404;
   }
 
   location /assets/ {
+    limit_except GET { deny all; }
     include /etc/nginx/security_headers.conf;
     add_header Cache-Control "public, max-age=31536000, immutable";
     try_files $uri =404;
   }
 
   location = /index.html {
+    limit_except GET { deny all; }
     include /etc/nginx/security_headers.conf;
     add_header Cache-Control "no-cache";
   }
 
-  location ~ /\. { deny all; }
+  location ~ /\. { return 404; }
   location ~ \.map$ { return 404; }
 }
 ```
+
+Ne pas activer l'OCSP stapling : Let's Encrypt a arrêté OCSP en 2025.
 
 Vérifier que le `mime.types` de Nginx contient `font/woff2 woff2;` et `application/pdf pdf;` : avec `nosniff`, un type absent ou erroné fait refuser la police ou le PDF.
 
@@ -164,7 +198,11 @@ Liste volontairement courte, non exhaustive :
 - SSH par clé uniquement : pas de connexion root, pas de mot de passe.
 - Mises à jour automatiques de sécurité activées.
 - Renouvellement automatique de certbot (et vérifier qu'il fonctionne : `certbot renew --dry-run`).
-- Le webroot appartient à un utilisateur non-root ; Nginx n'y a qu'un accès en lecture seule.
+- Le webroot appartient à un utilisateur non-root ; Nginx n'y a qu'un accès en lecture seule (webroot non inscriptible par Nginx), et ses workers tournent sans privilège (`user www-data;`).
+- fail2ban (ou CrowdSec) sur `sshd`, `MaxAuthTries 3` et `AllowUsers <utilisateur>` dans la configuration SSH.
+- Journaux Nginx en rotation (logrotate) avec conservation bornée à quelques semaines : les adresses IP sont des données personnelles (RGPD).
+- Surveiller le renouvellement certbot (échec = alerte avant l'expiration du certificat).
+- Déploiement par `rsync --delete` du seul contenu de `dist/`, avec un utilisateur de déploiement dédié, sans `sudo`.
 
 ### Secours sans en-têtes : balise `<meta>`
 
@@ -181,12 +219,18 @@ Le build de production injecte automatiquement (`vite.config.ts`, plugin `csp-me
 ## Vérification après déploiement
 
 ```bash
-curl -sI https://<domaine> | sort
-curl -sI https://<domaine>/assets/<fichier-hache>.js
-curl -sI http://<domaine>        # doit rediriger vers https
+nginx -t                                                  # configuration valide
+curl -sI https://<domaine> | sort                         # 200 + tous les en-têtes exigés
+curl -sI https://<domaine>/assets/<police>.woff2          # Content-Type: font/woff2
+curl -sI https://<domaine>/assets/<fichier-hache>.js      # Cache-Control immutable
+curl -sI https://<domaine>/cv/<fichier>.pdf               # Content-Type: application/pdf
+curl -sI https://<domaine>/page-inexistante               # 404
+curl -sI https://<domaine>/.git/config                    # 404
+curl -sI http://<domaine>                                 # 301 vers https://<domaine>/
+curl -skI https://<IP-du-serveur>                         # handshake rejeté (erreur TLS)
 ```
 
-Outils complémentaires : Mozilla Observatory, `securityheaders.com`, Lighthouse (bonnes pratiques).
+Test TLS : SSL Labs ou `testssl.sh <domaine>`. Outils complémentaires : Mozilla Observatory, `securityheaders.com`, Lighthouse (bonnes pratiques).
 
 ## Journal des risques acceptés
 

@@ -46,7 +46,7 @@ Honnêteté d'abord : tu ne dis jamais « aucune faille » comme certitude absol
 
 ### 4. En-têtes et configuration d'hébergement (`docs/DEPLOY-SECURITY.md`)
 Le document doit exiger, et tu vérifies sur le site déployé si accessible :
-- `Content-Security-Policy` stricte : `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests` (sans `unsafe-inline`/`unsafe-eval`).
+- `Content-Security-Policy` stricte : `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests` (sans `unsafe-inline`/`unsafe-eval`).
 - `Strict-Transport-Security: max-age=31536000; includeSubDomains` (+ `preload` si le domaine est prêt), redirection HTTP→HTTPS, TLS ≥ 1.2.
 - `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` restrictive (caméra, micro, géolocalisation… désactivés), `Cross-Origin-Opener-Policy: same-origin`.
 - Pas d'en-tête `Server`/`X-Powered-By` bavard, pas de listing de répertoire, pas de fichiers sensibles servis (`.git`, `.env`, `*.map`, `package.json`).

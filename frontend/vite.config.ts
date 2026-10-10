@@ -6,7 +6,7 @@ import { defineConfig, type Plugin } from 'vite';
 // Build only: the dev server needs an inline script for React Fast Refresh.
 // `frame-ancestors` is ignored in a <meta> tag, so the real header remains required.
 const CSP =
-  "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests";
+  "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests";
 
 function cspMetaPlugin(): Plugin {
   return {
