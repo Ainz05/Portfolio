@@ -1,5 +1,5 @@
 .heading {
-  color: var(--ink);
+  color: inherit;
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);

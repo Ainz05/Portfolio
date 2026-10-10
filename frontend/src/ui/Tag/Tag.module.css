@@ -1,0 +1,6 @@
+.tag {
+  display: inline-block;
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+}

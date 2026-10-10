@@ -1,0 +1,21 @@
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--placeholder-min-height);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  text-align: center;
+}
+
+.neutral {
+  background: var(--placeholder);
+  border: var(--border-width) dashed var(--placeholder-border);
+}
+
+.accent {
+  background: var(--accent);
+  color: var(--ink);
+}

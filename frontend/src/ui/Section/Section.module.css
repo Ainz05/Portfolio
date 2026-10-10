@@ -1,0 +1,22 @@
+.section {
+  padding-block: var(--section-padding-block);
+  /* Anchor navigation must not hide the heading under the sticky header. */
+  scroll-margin-top: var(--space-5);
+}
+
+.light {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.white {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.dark {
+  background: var(--ink);
+  color: var(--surface);
+  /* --primary on --ink is below 3:1: use the accent for focus rings in this context. */
+  --focus-ring-color: var(--accent);
+}
