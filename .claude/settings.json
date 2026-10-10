@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm ci)",
+      "Bash(npm audit *)",
+      "Bash(npm outdated*)",
+      "Bash(npx eslint *)",
+      "Bash(npx tsc *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)"
+    ],
+    "deny": [
+      "Read(./**/.env)",
+      "Read(./**/.env.*.local)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git commit*--no-verify*)",
+      "Bash(git reset --hard*)",
+      "Bash(rm -rf *)",
+      "Bash(curl * | sh*)",
+      "Bash(curl * | bash*)",
+      "Bash(wget * | sh*)"
+    ]
+  }
+}

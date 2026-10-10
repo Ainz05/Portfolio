@@ -1,0 +1,13 @@
+/* Indicative values from SPEC.md: adjust when compared with docs/reference.png. */
+:root {
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --ink: #101d42;
+  --muted: #4a5470;
+  --accent: #ffd84d;
+  --primary: #2b5be8;
+  --placeholder: #e8ebf4;
+
+  --font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --content-max-width: 68.75rem;
+}
