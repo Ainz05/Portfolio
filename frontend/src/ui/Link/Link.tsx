@@ -1,3 +1,4 @@
+import { sanitizeInternalHref } from '@/lib/internalHref';
 import { isExternalHttpsUrl, sanitizeUrl } from '@/lib/url';
 import styles from './Link.module.css';
 import type { ReactNode } from 'react';
@@ -5,7 +6,7 @@ import type { ReactNode } from 'react';
 export type LinkVariant = 'text' | 'primary' | 'secondary' | 'accent';
 
 export interface LinkProps {
-  /** Raw URL (from data/ or buildMailto): always validated here, never used as is. */
+  /** Raw URL (https:, mailto:, #anchor or same-origin path): always validated here, never used as is. */
   readonly href: string;
   readonly variant?: LinkVariant;
   /** Announced to assistive technologies when the link opens a new tab. Without it, no new tab. */
@@ -18,7 +19,7 @@ function classNames(variant: LinkVariant): string {
 }
 
 export function Link({ href, variant = 'text', newTabLabel, children }: LinkProps) {
-  const safeHref = sanitizeUrl(href);
+  const safeHref = sanitizeUrl(href) ?? sanitizeInternalHref(href);
   if (safeHref === null) {
     // An invalid URL must never produce an <a>: show the text only, styled as plain text so it
     // does not look clickable.

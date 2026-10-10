@@ -1,0 +1,73 @@
+import { sanitizeInternalHref } from './internalHref';
+
+describe('sanitizeInternalHref', () => {
+  it.each([
+    '#contact',
+    '#projets',
+    '#a',
+    '#section_2-b',
+    '/cv/florian.pdf',
+    '/cv/Florian_CV-2026.pdf',
+    '/cv',
+    '/a/b/c',
+    '/file.tar.gz',
+    '/_next/x',
+  ])('accepts %j unchanged', (value) => {
+    expect(sanitizeInternalHref(value)).toBe(value);
+  });
+
+  it.each([
+    '',
+    '#',
+    '#1abc',
+    '#-a',
+    '#a b',
+    '#a#b',
+    '#a?b=1',
+    '#é',
+    '#a\u{200b}b',
+    `#${'a'.repeat(65)}`,
+    '/',
+    '//evil.example.com',
+    '//',
+    '/\\evil.example.com',
+    '/cv\\file.pdf',
+    '\\\\evil',
+    '/..',
+    '/../etc/passwd',
+    '/cv/../secret',
+    '/cv/./x',
+    '/.env',
+    '/cv/.git',
+    '/%2e%2e/secret',
+    '/cv/%2e%2e/x',
+    '/cv%2Ffile.pdf',
+    '/cv/file.pdf?download=1',
+    '/cv/file.pdf#page=2',
+    '/cv/',
+    '/cv//file.pdf',
+    '/cv/fi le.pdf',
+    '/cv/fi\nle.pdf',
+    '/cv/file\u0000.pdf',
+    '/cv/fïle.pdf',
+    '/cv/\u{202e}fdp.pdf',
+    '/cv/\u{200b}file.pdf',
+    '/\u{430}pple',
+    `/${'a'.repeat(200)}`,
+    'cv/file.pdf',
+    './cv/file.pdf',
+    '../cv/file.pdf',
+    'javascript:alert(1)',
+    'JavaScript:alert(1)',
+    'data:text/html,x',
+    'vbscript:x',
+    'https://example.com',
+    'mailto:a@example.com',
+    ' #contact',
+    '#contact ',
+    '#contact\n',
+    '/cv/file.pdf\n',
+  ])('rejects %j', (value) => {
+    expect(sanitizeInternalHref(value)).toBeNull();
+  });
+});

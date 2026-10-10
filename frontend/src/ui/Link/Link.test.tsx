@@ -45,6 +45,36 @@ describe('Link', () => {
     expect(screen.getByRole('link')).toHaveAttribute('href', 'mailto:a@example.com');
   });
 
+  it.each(['#contact', '/cv/florian.pdf'])(
+    'renders the internal link %j without target or rel',
+    (href) => {
+      render(
+        <Link href={href} newTabLabel={NEW_TAB}>
+          Aller
+        </Link>,
+      );
+      const link = screen.getByRole('link', { name: 'Aller' });
+      expect(link).toHaveAttribute('href', href);
+      expect(link).not.toHaveAttribute('target');
+      expect(link).not.toHaveAttribute('rel');
+    },
+  );
+
+  it.each([
+    '//evil.example.com',
+    '/\\evil.example.com',
+    '/../secret',
+    '/%2e%2e/secret',
+    '/cv/file.pdf?x=1',
+    '#1abc',
+    '#a b',
+    '/cv/fi le.pdf',
+  ])('renders text only for the hostile internal link %j', (href) => {
+    const { container } = render(<Link href={href}>Texte</Link>);
+    expect(container.querySelector('a')).toBeNull();
+    expect(container).toHaveTextContent('Texte');
+  });
+
   it('never adds target or rel to a valid mailto link', () => {
     render(
       <Link href="mailto:a@example.com?subject=Salut" newTabLabel={NEW_TAB}>
