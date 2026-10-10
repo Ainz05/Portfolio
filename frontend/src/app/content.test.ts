@@ -1,10 +1,9 @@
-import { about } from '@/data/about';
-import { contact } from '@/data/contact';
-import { hero } from '@/data/hero';
-import { navigation } from '@/data/navigation';
-import { projects } from '@/data/projects';
-import { contactEmail, contactSubject } from '@/data/site';
-import { skills } from '@/data/skills';
+import * as about from '@/data/about';
+import * as contact from '@/data/contact';
+import * as navigation from '@/data/navigation';
+import * as projects from '@/data/projects';
+import * as site from '@/data/site';
+import * as skills from '@/data/skills';
 import { sanitizeInternalHref } from '@/lib/internalHref';
 import { buildMailto } from '@/lib/mailto';
 import { sanitizeUrl } from '@/lib/url';
@@ -12,6 +11,10 @@ import { sanitizeUrl } from '@/lib/url';
 const PLACEHOLDER = /^\[À COMPLÉTER : [^\]]+\]$/;
 // Placeholder forms imposed verbatim by SPEC.md.
 const SPEC_PLACEHOLDERS = ['[Ta photo ici]', "[Capture d'écran du projet]"];
+
+// Every module of data/ (tests excluded): a new file is covered without editing this test.
+const dataModules = import.meta.glob(['../data/*.ts', '!../data/*.test.ts'], { eager: true });
+const allData: readonly unknown[] = Object.values(dataModules);
 
 function collectStrings(value: unknown): string[] {
   if (typeof value === 'string') {
@@ -26,31 +29,55 @@ function collectStrings(value: unknown): string[] {
   return [];
 }
 
-const allStrings = collectStrings([navigation, hero, projects, skills, about, contact]);
+function collectHrefs(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.flatMap(collectHrefs);
+  }
+  if (typeof value === 'object' && value !== null) {
+    return Object.entries(value).flatMap(([key, child]) =>
+      key === 'href' && typeof child === 'string' ? [child] : collectHrefs(child),
+    );
+  }
+  return [];
+}
 
-const allHrefs = [
-  ...navigation.items,
-  hero.primaryAction,
-  hero.secondaryAction,
-  ...projects.projects.flatMap((project) => project.links),
-  ...contact.socialLinks,
-].map((link) => link.href);
+function isSafeLink(href: string): boolean {
+  return sanitizeUrl(href) !== null || sanitizeInternalHref(href) !== null;
+}
+
+const allStrings = collectStrings(allData);
+const allHrefs = collectHrefs(allData);
 
 describe('site content', () => {
   it('has unique section ids matching the navigation anchors', () => {
-    const ids = [projects.id, skills.id, about.id, contact.id];
+    const ids = [projects.projects.id, skills.skills.id, about.about.id, contact.contact.id];
     expect(new Set(ids).size).toBe(ids.length);
-    expect(navigation.items.map((item) => item.href)).toEqual(ids.map((id) => `#${id}`));
+    expect(navigation.navigation.items.map((item) => item.href)).toEqual(ids.map((id) => `#${id}`));
   });
 
   it('has unique project and skill ids', () => {
-    const ids = [...projects.projects.map((p) => p.id), ...skills.columns.map((c) => c.id)];
+    const ids = [
+      ...projects.projects.projects.map((project) => project.id),
+      ...skills.skills.columns.map((column) => column.id),
+    ];
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it('finds the links of every section', () => {
+    expect(allHrefs.length).toBeGreaterThanOrEqual(15);
+  });
+
   it.each(allHrefs)('has a valid link or a placeholder for %j', (href) => {
-    const valid = sanitizeUrl(href) !== null || sanitizeInternalHref(href) !== null;
-    expect(valid || PLACEHOLDER.test(href)).toBe(true);
+    expect(isSafeLink(href) || PLACEHOLDER.test(href)).toBe(true);
+  });
+
+  it('never lets a placeholder pass link validation', () => {
+    const placeholders = allStrings.filter((text) => PLACEHOLDER.test(text));
+    expect(placeholders.length).toBeGreaterThan(0);
+    for (const placeholder of placeholders) {
+      expect(sanitizeUrl(placeholder)).toBeNull();
+      expect(sanitizeInternalHref(placeholder)).toBeNull();
+    }
   });
 
   it('writes every bracketed placeholder in an accepted form', () => {
@@ -61,11 +88,11 @@ describe('site content', () => {
   });
 
   it('builds a safe mailto from the configured subject', () => {
-    expect(buildMailto({ to: 'prenom@example.com', subject: contactSubject })).not.toBeNull();
+    expect(buildMailto({ to: 'prenom@example.com', subject: site.contactSubject })).not.toBeNull();
   });
 
   it('shows the email placeholder as text until a real address is set', () => {
-    expect(buildMailto({ to: contactEmail, subject: contactSubject })).toBeNull();
-    expect(contact.emailLabel).toBe(contactEmail);
+    expect(buildMailto({ to: site.contactEmail, subject: site.contactSubject })).toBeNull();
+    expect(contact.contact.emailLabel).toBe(site.contactEmail);
   });
 });

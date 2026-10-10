@@ -1,4 +1,4 @@
-import type { HeroContent } from '@/types/profile';
+import type { HeroContent } from '@/types/sections';
 
 export const hero: HeroContent = {
   eyebrow: 'Bienvenue sur mon portfolio.',

@@ -1,4 +1,4 @@
-import type { AboutContent } from '@/types/profile';
+import type { AboutContent } from '@/types/sections';
 
 export const about: AboutContent = {
   id: 'a-propos',

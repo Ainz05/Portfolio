@@ -1,4 +1,4 @@
-import type { ContactContent } from '@/types/profile';
+import type { ContactContent } from '@/types/sections';
 import { lastName } from './identity';
 import { contactEmail } from './site';
 

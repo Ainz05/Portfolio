@@ -21,7 +21,7 @@ Référence visuelle : `docs/reference.png`. Le rendu final doit lui ressembler 
 ## Sections (dans l'ordre)
 
 ### 0. Header
-Logo texte `Florian [NOM]` à gauche. Navigation à droite : Projets, Outils, À propos, Contact (ancres vers les sections, défilement doux).
+Logo texte `Florian [À COMPLÉTER : nom de famille]` à gauche. Navigation à droite : Projets, Outils, À propos, Contact (ancres vers les sections, défilement doux).
 
 ### 1. Hero
 - Petite ligne : « Bienvenue sur mon portfolio. »
@@ -55,14 +55,14 @@ Titre à gauche, trois paragraphes à droite :
 
 ### 5. Contact (fond bleu nuit)
 - Titre « On discute ? » ; texte « Si vous avez un stage de 15 semaines en DevOps, IA ou MLOps, j'aimerais beaucoup en parler. »
-- Bouton jaune `[TON EMAIL]` = lien `mailto:` (objet pré-rempli, ex. « Stage DevOps / IA / MLOps — prise de contact ») + liens LinkedIn et GitHub. Pas de formulaire ni de backend.
-- Pied de page : « © 2026 Florian [NOM] ».
+- Bouton jaune `[À COMPLÉTER : adresse email publique]` = lien `mailto:` (objet pré-rempli, ex. « Stage DevOps / IA / MLOps — prise de contact ») + liens LinkedIn et GitHub. Pas de formulaire ni de backend.
+- Pied de page : « © 2026 Florian [À COMPLÉTER : nom de famille] ».
 
 Remarque : l'adresse email est publique dans le site (inévitable avec un `mailto:`) ; c'est un choix assumé, donc aucun autre contact personnel n'est affiché.
 
 ## Placeholders à compléter par Florian (ne pas inventer)
 
-- `[NOM]` (nom de famille), `[École]`, photo, adresse email publique
+- `[À COMPLÉTER : nom de famille]`, `[À COMPLÉTER : école]`, photo (`[Ta photo ici]`), `[À COMPLÉTER : adresse email publique]`
 - URL LinkedIn et GitHub, URL des dépôts et des démos de chaque projet
 - Description d'EventHub
 - Captures d'écran des 4 projets
