@@ -1,6 +1,12 @@
 # Sécurité du déploiement (site statique)
 
-Le site n'a pas de backend : la sécurité repose sur (1) un code sans ressource tierce ni injection possible, et (2) les **en-têtes HTTP posés par l'hébergeur**. Ce document est la référence du `security-reviewer`. L'hébergeur n'est pas encore choisi : adapter la syntaxe (fichier `_headers`, `netlify.toml`, `vercel.json`, config Nginx/Caddy, règles CloudFront…).
+Le site n'a pas de backend : la sécurité repose sur (1) un code sans ressource tierce ni injection possible, et (2) les **en-têtes HTTP posés par l'hébergeur**. Ce document est la référence du `security-reviewer`.
+
+## Hébergement cible
+
+VPS auto-hébergé avec **Nginx**. L'exemple Nginx ci-dessous est la configuration de référence.
+
+Hypothèse : le site est servi à la **racine d'un domaine** (`https://<domaine>/`). `base: '/'` de Vite, les chemins `/assets/` et `/cv/` et la validation de `sanitizeInternalHref` (chemins absolus `/…`) en dépendent. Si le site est un jour servi sous un sous-chemin : définir `base` dans `vite.config.ts`, préfixer les chemins internes dans `app/` avec `import.meta.env.BASE_URL`, puis revalider (tests, CSP, en-têtes, liens).
 
 ## En-têtes exigés sur toutes les réponses
 
@@ -26,7 +32,7 @@ Notes :
 
 La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles de style externes, aucun inline). Si une dépendance future ajoute du JS ou du CSS inline, corriger le code plutôt qu'assouplir la CSP.
 
-### Netlify / Cloudflare Pages : fichier `_headers`
+### Netlify / Cloudflare Pages : fichier `_headers` (alternative non retenue)
 
 À placer dans `frontend/public/_headers` (copié tel quel dans `dist/`). Les règles `/` et `/index.html` sont identiques : la racine sert `index.html`.
 
@@ -51,7 +57,7 @@ La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles d
   Cache-Control: no-cache
 ```
 
-### Vercel : `vercel.json`
+### Vercel : `vercel.json` (alternative non retenue)
 
 ```json
 {
@@ -77,7 +83,7 @@ La CSP ci-dessus est compatible avec le build Vite actuel (scripts et feuilles d
 }
 ```
 
-### Nginx
+### Nginx (configuration de référence)
 
 Les directives `add_header` d'un bloc `location` **remplacent** celles héritées du `server`. Les en-têtes de sécurité sont donc dans un fichier unique, inclus au niveau `server` et dans chaque `location` qui ajoute son propre `add_header`.
 
@@ -102,12 +108,21 @@ server_tokens off;
 server {
   listen 80;
   server_name <domaine>;
-  return 301 https://$host$request_uri;
+
+  # Certbot (mode webroot) : le défi ACME doit rester servi en HTTP, avant la redirection.
+  location ^~ /.well-known/acme-challenge/ {
+    root <webroot certbot>;
+  }
+
+  location / {
+    # Domaine fixe plutôt que $host : pas de redirection vers un Host arbitraire.
+    return 301 https://<domaine>$request_uri;
+  }
 }
 
 server {
   listen 443 ssl;
-  http2 on;
+  http2 on;   # Nginx >= 1.25.1 ; sinon : listen 443 ssl http2;
   server_name <domaine>;
 
   ssl_certificate     /path/to/fullchain.pem;
@@ -139,6 +154,17 @@ server {
   location ~ \.map$ { return 404; }
 }
 ```
+
+Vérifier que le `mime.types` de Nginx contient `font/woff2 woff2;` et `application/pdf pdf;` : avec `nosniff`, un type absent ou erroné fait refuser la police ou le PDF.
+
+### Durcissement du VPS (hors Nginx)
+
+Liste volontairement courte, non exhaustive :
+- Pare-feu n'ouvrant que les ports 22, 80 et 443.
+- SSH par clé uniquement : pas de connexion root, pas de mot de passe.
+- Mises à jour automatiques de sécurité activées.
+- Renouvellement automatique de certbot (et vérifier qu'il fonctionne : `certbot renew --dry-run`).
+- Le webroot appartient à un utilisateur non-root ; Nginx n'y a qu'un accès en lecture seule.
 
 ### Secours sans en-têtes : balise `<meta>`
 

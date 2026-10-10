@@ -6,7 +6,10 @@ import type { ReactNode } from 'react';
 export type LinkVariant = 'text' | 'primary' | 'secondary' | 'accent';
 
 export interface LinkProps {
-  /** Raw URL (https:, mailto:, #anchor or same-origin path): always validated here, never used as is. */
+  /**
+   * Raw URL (https:, mailto:, #anchor or same-origin path): always validated here,
+   * never used as is.
+   */
   readonly href: string;
   readonly variant?: LinkVariant;
   /** Announced to assistive technologies when the link opens a new tab. Without it, no new tab. */

@@ -28,6 +28,8 @@ export default defineConfig({
   build: {
     // Public bundle: no sourcemaps, no console/debugger (see frontend/CLAUDE.md).
     sourcemap: false,
+    // Never inline assets as data: URLs: the CSP (font-src/img-src 'self') would block fonts.
+    assetsInlineLimit: 0,
     target: 'es2022',
     rolldownOptions: {
       output: { minify: { compress: { dropConsole: true, dropDebugger: true } } },
