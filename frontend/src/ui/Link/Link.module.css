@@ -1,7 +1,10 @@
 .link {
-  color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+.text {
+  color: var(--link-color);
 }
 
 .link:focus-visible {

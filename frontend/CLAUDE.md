@@ -8,6 +8,7 @@ Voir d'abord `../CLAUDE.md` (règles communes) et `../SPEC.md` (contenu et desig
 - Style : CSS Modules + variables CSS pour les design tokens (`src/styles/tokens.css`). Pas de second système de style.
 - Tests : Vitest + React Testing Library + `@testing-library/user-event` ; `vitest-axe` pour l'accessibilité.
 - Qualité : ESLint (`typescript-eslint` strict, `react-hooks`, `jsx-a11y`, `import`, `eslint-plugin-boundaries`), Prettier, EditorConfig, `dependency-cruiser`.
+- Les balises `<meta>` (SEO, Open Graph…) vivent dans `index.html`, jamais en JSX (interdit par ESLint).
 - Aucune bibliothèque UI, aucun état global, aucun routeur : une seule page.
 
 ## Architecture en couches (découplage)

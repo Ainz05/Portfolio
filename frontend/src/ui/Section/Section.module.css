@@ -19,4 +19,6 @@
   color: var(--surface);
   /* --primary on --ink is below 3:1: use the accent for focus rings in this context. */
   --focus-ring-color: var(--accent);
+  /* --accent on --ink is about 11.9:1; --primary is only 2.9:1, too low for text. */
+  --link-color: var(--accent);
 }

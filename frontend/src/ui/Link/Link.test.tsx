@@ -129,6 +129,11 @@ describe('Link', () => {
     expect(screen.getByRole('link').className).toContain('primary');
   });
 
+  it('gives the default text variant its own class', () => {
+    render(<Link href="https://example.com">Site</Link>);
+    expect(screen.getByRole('link').className).toContain('text');
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(
       <main>
