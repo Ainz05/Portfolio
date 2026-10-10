@@ -192,7 +192,7 @@ server {
 
 OCSP stapling : Let's Encrypt a annoncé la fin de son service OCSP ; vérifier la situation de l'AC utilisée avant d'activer `ssl_stapling`.
 
-Vérifier que le `mime.types` de Nginx contient `font/woff2 woff2;` et `application/pdf pdf;` : avec `nosniff`, un type absent ou erroné fait refuser la police ou le PDF.
+Vérifier que le `mime.types` de Nginx contient `font/woff2 woff2;`, `application/pdf pdf;` et `image/svg+xml svg;` : avec `nosniff`, un type absent ou erroné fait refuser la police, le PDF ou le favicon.
 
 ### Durcissement du VPS (hors Nginx)
 
@@ -226,6 +226,7 @@ curl -sI https://<domaine> | sort                         # 200 + tous les en-t�
 curl -sI https://<domaine>/assets/<police>.woff2          # Content-Type: font/woff2
 curl -sI https://<domaine>/assets/<fichier-hache>.js      # Cache-Control immutable
 curl -sI https://<domaine>/cv/<fichier>.pdf               # Content-Type: application/pdf
+curl -sI https://<domaine>/favicon.svg                    # Content-Type: image/svg+xml + les 8 en-têtes
 curl -sI https://<domaine>/page-inexistante               # 404
 curl -sI https://<domaine>/.git/config                    # 404
 curl -sI http://<domaine>                                 # 301 vers https://<domaine>/
