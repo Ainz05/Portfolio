@@ -106,6 +106,14 @@ Configuration du site :
 ```nginx
 server_tokens off;
 
+# TLS commun, profil Mozilla « intermediate » : dans le contexte http pour couvrir aussi
+# le serveur fourre-tout.
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers off;
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+
 # Limitation de débit (optionnelle) : la zone se déclare dans le contexte http.
 # limit_req_zone $binary_remote_addr zone=site:10m rate=20r/s;
 
@@ -149,11 +157,6 @@ server {
 
   ssl_certificate     /path/to/fullchain.pem;
   ssl_certificate_key /path/to/privkey.pem;
-  ssl_protocols TLSv1.2 TLSv1.3;
-  ssl_prefer_server_ciphers off;   # profil Mozilla « intermediate »
-  ssl_session_timeout 1d;
-  ssl_session_cache shared:SSL:10m;
-  ssl_session_tickets off;
 
   root /usr/share/nginx/html;   # contenu de dist/ uniquement
   index index.html;
@@ -187,7 +190,7 @@ server {
 }
 ```
 
-Ne pas activer l'OCSP stapling : Let's Encrypt a arrêté OCSP en 2025.
+OCSP stapling : Let's Encrypt a annoncé la fin de son service OCSP ; vérifier la situation de l'AC utilisée avant d'activer `ssl_stapling`.
 
 Vérifier que le `mime.types` de Nginx contient `font/woff2 woff2;` et `application/pdf pdf;` : avec `nosniff`, un type absent ou erroné fait refuser la police ou le PDF.
 
@@ -197,11 +200,10 @@ Liste volontairement courte, non exhaustive :
 - Pare-feu n'ouvrant que les ports 22, 80 et 443.
 - SSH par clé uniquement : pas de connexion root, pas de mot de passe.
 - Mises à jour automatiques de sécurité activées.
-- Renouvellement automatique de certbot (et vérifier qu'il fonctionne : `certbot renew --dry-run`).
+- Renouvellement automatique de certbot, vérifié (`certbot renew --dry-run`) et surveillé : un échec doit alerter avant l'expiration du certificat.
 - Le webroot appartient à un utilisateur non-root ; Nginx n'y a qu'un accès en lecture seule (webroot non inscriptible par Nginx), et ses workers tournent sans privilège (`user www-data;`).
 - fail2ban (ou CrowdSec) sur `sshd`, `MaxAuthTries 3` et `AllowUsers <utilisateur>` dans la configuration SSH.
 - Journaux Nginx en rotation (logrotate) avec conservation bornée à quelques semaines : les adresses IP sont des données personnelles (RGPD).
-- Surveiller le renouvellement certbot (échec = alerte avant l'expiration du certificat).
 - Déploiement par `rsync --delete` du seul contenu de `dist/`, avec un utilisateur de déploiement dédié, sans `sudo`.
 
 ### Secours sans en-têtes : balise `<meta>`
@@ -246,3 +248,15 @@ Test TLS : SSL Labs ou `testssl.sh <domaine>`. Outils complémentaires : Mozilla
 ## Journal
 
 À chaque audit complet, noter ici la date, le verdict du `security-reviewer` et les points restés « non vérifiés ».
+
+### Audit de fin de phase fondations — 2026-10-10 — HEAD 30dbc96 — verdict OK
+
+Aucun constat CRITIQUE, ÉLEVÉ ou MOYEN. À vérifier avant mise en ligne :
+- Nginx sur le VPS : `nginx -t`, en-têtes présents partout (404 comprises), redirection HTTP→HTTPS, serveurs par défaut (444, handshake rejeté), défi ACME.
+- TLS : `testssl.sh` ou SSL Labs, et décision sur `includeSubDomains`.
+- Durcissement du VPS (pare-feu, SSH, mises à jour, journaux, déploiement).
+- Métadonnées du CV PDF (auteur, logiciel, chemins).
+- Revue ciblée des contenus finaux de `data/` (URL, adresse email, textes).
+- `npm audit --omit=dev` à 0 ; réévaluation de `braces` au 2027-01-10.
+- Lighthouse ≥ 95 (prévoir un favicon).
+- Avant le premier push : Dependabot/Renovate, CI à permissions minimales.

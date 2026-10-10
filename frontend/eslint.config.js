@@ -24,7 +24,7 @@ const boundariesPolicies = Object.entries(LAYER_DEPENDENCIES).map(([layer, allow
   allow: { to: { element: { type: allowed } } },
 }));
 
-const FORBIDDEN_SYNTAX = [
+const BASE_SYNTAX = [
   {
     selector: "JSXAttribute[name.name='dangerouslySetInnerHTML']",
     message: 'dangerouslySetInnerHTML is forbidden.',
@@ -46,6 +46,36 @@ const FORBIDDEN_SYNTAX = [
     message: 'document.write is forbidden.',
   },
   { selector: 'TSEnumDeclaration', message: 'Use a union of literals instead of enum.' },
+];
+
+// Navigation must go through ui/Link (validated href): no raw <a>, target, window.open or location.
+const NAVIGATION_SYNTAX = [
+  {
+    selector: "JSXOpeningElement[name.name='a']",
+    message: 'Use ui/Link: every href must be validated.',
+  },
+  {
+    selector: "JSXAttribute[name.name='target']",
+    message: 'Use ui/Link: target is only set there, together with rel.',
+  },
+  {
+    selector:
+      "CallExpression[callee.property.name='open'][callee.object.name=/^(window|globalThis)$/]",
+    message: 'window.open is forbidden: use ui/Link.',
+  },
+  {
+    selector:
+      "MemberExpression[property.name='location'][object.name=/^(window|document|globalThis)$/]",
+    message: 'Direct location access is forbidden: use ui/Link.',
+  },
+  {
+    selector: "MemberExpression[object.name='location']",
+    message: 'Direct location access is forbidden: use ui/Link.',
+  },
+  {
+    selector: "AssignmentExpression[left.name='location']",
+    message: 'Direct location access is forbidden: use ui/Link.',
+  },
 ];
 
 export default tseslint.config(
@@ -88,7 +118,7 @@ export default tseslint.config(
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
-      'no-restricted-syntax': ['error', ...FORBIDDEN_SYNTAX],
+      'no-restricted-syntax': ['error', ...BASE_SYNTAX, ...NAVIGATION_SYNTAX],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/ban-ts-comment': [
         'error',
@@ -131,6 +161,11 @@ export default tseslint.config(
       'import/no-unresolved': 'off',
       'boundaries/dependencies': ['error', { default: 'disallow', policies: boundariesPolicies }],
     },
+  },
+  {
+    // The only place allowed to render <a> and set target: the validated link primitive.
+    files: ['src/ui/Link/Link.tsx'],
+    rules: { 'no-restricted-syntax': ['error', ...BASE_SYNTAX] },
   },
   {
     files: ['src/app/App.tsx', 'src/app/main.tsx'],
