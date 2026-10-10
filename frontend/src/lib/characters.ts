@@ -51,25 +51,12 @@ export function hasNonPrintableAscii(value: string): boolean {
   return false;
 }
 
-function isInvisibleFormattingCode(code: number): boolean {
-  return (
-    code === 0x00ad ||
-    (code >= 0x200b && code <= 0x200f) ||
-    code === 0x2028 ||
-    code === 0x2029 ||
-    (code >= 0x202a && code <= 0x202e) ||
-    (code >= 0x2066 && code <= 0x2069) ||
-    code === 0xfeff
-  );
-}
+// Format characters (Cf: zero-width, bidi controls, tags, soft hyphen, BOM...) and line/paragraph
+// separators (Zl, Zp), plus the blank-looking characters that Unicode does not class as Cf:
+// combining grapheme joiner, Hangul fillers. \p{Default_Ignorable_Code_Point} is avoided on
+// purpose: it contains U+FE0F, which legitimate emoji need. Plain accented letters are unaffected.
+const INVISIBLE_FORMATTING = /[\p{Cf}\p{Zl}\p{Zp}\u{34F}\u{115F}\u{1160}\u{3164}\u{FFA0}]/u;
 
-// Zero-width, bidirectional-override and line-separator characters can disguise text.
-// Plain accented letters are not affected.
 export function hasInvisibleFormatting(value: string): boolean {
-  for (let index = 0; index < value.length; index += 1) {
-    if (isInvisibleFormattingCode(value.charCodeAt(index))) {
-      return true;
-    }
-  }
-  return false;
+  return INVISIBLE_FORMATTING.test(value);
 }

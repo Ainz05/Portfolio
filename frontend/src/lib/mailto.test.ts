@@ -88,6 +88,18 @@ describe('buildMailto', () => {
     );
   });
 
+  it('accepts an emoji with its variation selector', () => {
+    expect(buildMailto({ to: TO, subject: '\u{2764}\u{fe0f}' })).toBe(
+      `mailto:${TO}?subject=%E2%9D%A4%EF%B8%8F`,
+    );
+  });
+
+  it('rejects word joiner, tag characters and Hangul filler', () => {
+    expect(buildMailto({ to: TO, subject: 'a\u{2060}b' })).toBeNull();
+    expect(buildMailto({ to: TO, body: 'a\u{e0041}b' })).toBeNull();
+    expect(buildMailto({ to: TO, subject: 'a\u{3164}b' })).toBeNull();
+  });
+
   it('omits empty parameters', () => {
     expect(buildMailto({ to: TO, subject: '', body: '' })).toBe(`mailto:${TO}`);
   });

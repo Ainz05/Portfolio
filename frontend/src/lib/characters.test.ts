@@ -67,11 +67,28 @@ describe('hasInvisibleFormatting', () => {
     '\u{2066}',
     '\u{2069}',
     '\u{feff}',
+    '\u{2060}',
+    '\u{180e}',
+    '\u{34f}',
+    '\u{e0041}',
+    '\u{61c}',
+    '\u{3164}',
+    '\u{fff9}',
+    '\u{115f}',
+    '\u{1160}',
+    '\u{ffa0}',
   ])('detects %j', (value) => {
     expect(hasInvisibleFormatting(value)).toBe(true);
   });
 
-  it.each(['', 'Été à Mons — œuvre', '😀', 'a b\n'])('accepts %j', (value) => {
+  it.each([
+    '',
+    'Été à Mons — œuvre',
+    'Ça va très bien, merci !',
+    '😀',
+    '\u{2764}\u{fe0f}',
+    'a b\n',
+  ])('accepts %j', (value) => {
     expect(hasInvisibleFormatting(value)).toBe(false);
   });
 });
