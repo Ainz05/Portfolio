@@ -1,0 +1,18 @@
+/* Self-hosted DM Sans (OFL-1.1) from @fontsource: latin subset covers French (accents, oe).
+   Only woff2 is declared so Vite emits one file per weight; no third-party origin is involved,
+   which keeps the CSP at font-src 'self'. */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('@fontsource/dm-sans/files/dm-sans-latin-800-normal.woff2') format('woff2');
+}
