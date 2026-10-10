@@ -55,6 +55,8 @@ export function hasNonPrintableAscii(value: string): boolean {
 // separators (Zl, Zp), plus the blank-looking characters that Unicode does not class as Cf:
 // combining grapheme joiner, Hangul fillers. \p{Default_Ignorable_Code_Point} is avoided on
 // purpose: it contains U+FE0F, which legitimate emoji need. Plain accented letters are unaffected.
+// U+200D (ZWJ) is rejected on purpose: composed emoji are refused,
+// so mailto texts in data/ must not contain any.
 const INVISIBLE_FORMATTING = /[\p{Cf}\p{Zl}\p{Zp}\u{34F}\u{115F}\u{1160}\u{3164}\u{FFA0}]/u;
 
 export function hasInvisibleFormatting(value: string): boolean {

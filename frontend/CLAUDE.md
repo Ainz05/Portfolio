@@ -81,7 +81,7 @@ components/ProjectCard/
 
 ## Contact par `mailto:`
 
-- La logique vit dans `lib/mailto.ts` (fonction pure : `buildMailto({ to, subject, body })`, avec `encodeURIComponent` sur chaque paramètre, retours à la ligne encodés, longueur bornée) et est testée.
+- La logique vit dans `lib/mailto.ts` (fonction pure : `buildMailto({ to, subject, body })`, avec `encodeURIComponent` sur chaque paramètre, retours à la ligne encodés, longueur bornée) et est testée. Elle renvoie `string | null` : `null` quand l'adresse est un placeholder ou qu'une entrée est invalide ou dangereuse ; l'appelant affiche alors le texte sans lien. Même contrat pour `sanitizeUrl` dans `lib/url.ts`.
 - L'adresse vient de `data/site.ts` (`contactEmail`) ; elle est publique. Aucune autre donnée personnelle (téléphone, adresse postale) dans le code.
 - Le bouton est un lien `<a href="mailto:…">` (jamais un `window.location` en JS) avec un nom accessible explicite, et un texte visible de secours avec l'adresse.
 - Pas de formulaire : aucune saisie utilisateur n'est traitée par le site.
