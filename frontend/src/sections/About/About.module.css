@@ -1,0 +1,19 @@
+/* Mobile first: title above the text. */
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-5);
+  max-width: var(--reading-max-width);
+  color: var(--muted);
+}
+
+@media (min-width: 48rem) {
+  .layout {
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--section-padding-block);
+  }
+}

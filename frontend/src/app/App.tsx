@@ -1,8 +1,10 @@
+import { about } from '@/data/about';
 import { hero } from '@/data/hero';
 import { navigation } from '@/data/navigation';
 import { projects } from '@/data/projects';
 import { newTabLabel } from '@/data/site';
 import { skills } from '@/data/skills';
+import { About } from '@/sections/About';
 import { Header } from '@/sections/Header';
 import { Hero } from '@/sections/Hero';
 import { Projects } from '@/sections/Projects';
@@ -26,6 +28,7 @@ export default function App() {
         <Hero content={hero} />
         <Projects content={projects} newTabLabel={newTabLabel} />
         <Skills content={skills} />
+        <About content={about} />
       </main>
     </>
   );

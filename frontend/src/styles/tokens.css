@@ -10,6 +10,7 @@
 
   --font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --content-max-width: 68.75rem;
+  --reading-max-width: 40rem;
 
   --font-weight-regular: 400;
   --font-weight-bold: 800;
