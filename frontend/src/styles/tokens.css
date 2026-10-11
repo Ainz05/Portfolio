@@ -32,6 +32,8 @@
   --space-3: 0.75rem;
   --space-5: 1.5rem;
   --radius-pill: 62.4375rem;
+  /* Skip link must stay above the sections that follow the header. */
+  --z-skip-link: 10;
   --tap-target-min: 2.75rem;
   --border-width: 0.125rem;
 

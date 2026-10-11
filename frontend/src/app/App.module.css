@@ -1,0 +1,5 @@
+/* <main> is focusable only so the skip link moves focus there; it is not interactive,
+   so a focus ring would be noise. */
+.main:focus {
+  outline: none;
+}

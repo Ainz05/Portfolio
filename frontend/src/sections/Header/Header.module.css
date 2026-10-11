@@ -1,0 +1,37 @@
+.header {
+  padding-block: var(--space-5);
+}
+
+/* Off-screen until focused, so it does not alter the layout of the page. */
+.skipLink {
+  position: absolute;
+  z-index: var(--z-skip-link);
+  top: var(--space-3);
+  left: var(--space-3);
+  transform: translateY(-200%);
+}
+
+.skipLink:focus-within {
+  transform: none;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+}
+
+.logo {
+  font-weight: var(--font-weight-bold);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
