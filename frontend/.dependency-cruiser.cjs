@@ -13,6 +13,9 @@ const ALLOWED = {
   data: ['data', 'types'],
 };
 
+// Tests and their helpers (*.test-utils.ts): never part of the shipped code.
+const TEST_FILE = '[.]test(-utils)?[.]tsx?$';
+
 const MODULE_LAYERS = ['sections', 'components', 'ui'];
 
 const layerRules = LAYERS.map((layer) => ({
@@ -71,22 +74,22 @@ module.exports = {
       severity: 'error',
       from: {
         orphan: true,
-        pathNot: ['[.]d[.]ts$', '[.]test[.]tsx?$', '[.]gitkeep$'],
+        pathNot: ['[.]d[.]ts$', TEST_FILE, '[.]gitkeep$'],
       },
       to: {},
     },
     {
       name: 'not-to-test',
-      comment: 'Production code must not import tests.',
+      comment: 'Production code must not import tests or test helpers.',
       severity: 'error',
-      from: { pathNot: '[.]test[.]tsx?$' },
-      to: { path: '[.]test[.]tsx?$' },
+      from: { pathNot: TEST_FILE },
+      to: { path: TEST_FILE },
     },
     {
       name: 'not-to-dev-dependencies',
       comment: 'Shipped code must not depend on devDependencies.',
       severity: 'error',
-      from: { path: '^src', pathNot: '[.]test[.]tsx?$' },
+      from: { path: '^src', pathNot: TEST_FILE },
       to: { dependencyTypes: ['npm-dev'] },
     },
   ],

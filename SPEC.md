@@ -62,7 +62,7 @@ Remarque : l'adresse email est publique dans le site (inévitable avec un `mailt
 
 ## Placeholders à compléter par Florian (ne pas inventer)
 
-- `[À COMPLÉTER : nom de famille]`, `[À COMPLÉTER : école]`, photo (`[Ta photo ici]`), `[À COMPLÉTER : adresse email publique]`
+- photo (`[Ta photo ici]`)
 - URL LinkedIn et GitHub, URL des dépôts et des démos de chaque projet
 - Description d'EventHub
 - Captures d'écran des 4 projets

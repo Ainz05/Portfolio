@@ -9,39 +9,11 @@ import { hasControlCharacter, hasInvisibleFormatting } from '@/lib/characters';
 import { sanitizeInternalHref } from '@/lib/internalHref';
 import { buildMailto } from '@/lib/mailto';
 import { sanitizeUrl } from '@/lib/url';
+import { allData, collectHrefs, collectStrings } from './dataCollectors.test-utils';
 
 const PLACEHOLDER = /^\[À COMPLÉTER : [^\]]+\]$/;
 // Placeholder forms imposed verbatim by SPEC.md.
 const SPEC_PLACEHOLDERS = ['[Ta photo ici]', "[Capture d'écran du projet]"];
-
-// Every module of data/ (tests excluded): a new file is covered without editing this test.
-const dataModules = import.meta.glob(['../data/*.ts', '!../data/*.test.ts'], { eager: true });
-const allData: readonly unknown[] = Object.values(dataModules);
-
-function collectStrings(value: unknown): string[] {
-  if (typeof value === 'string') {
-    return [value];
-  }
-  if (Array.isArray(value)) {
-    return value.flatMap(collectStrings);
-  }
-  if (typeof value === 'object' && value !== null) {
-    return Object.values(value).flatMap(collectStrings);
-  }
-  return [];
-}
-
-function collectHrefs(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.flatMap(collectHrefs);
-  }
-  if (typeof value === 'object' && value !== null) {
-    return Object.entries(value).flatMap(([key, child]) =>
-      key === 'href' && typeof child === 'string' ? [child] : collectHrefs(child),
-    );
-  }
-  return [];
-}
 
 function isSafeLink(href: string): boolean {
   return sanitizeUrl(href) !== null || sanitizeInternalHref(href) !== null;
@@ -109,8 +81,11 @@ describe('site content', () => {
     expect(buildMailto({ to: 'prenom@example.com', subject: site.contactSubject })).not.toBeNull();
   });
 
-  it('shows the email placeholder as text until a real address is set', () => {
-    expect(buildMailto({ to: site.contactEmail, subject: site.contactSubject })).toBeNull();
+  it('builds the exact mailto for the public address, stable through link validation', () => {
+    const expected = `mailto:${site.contactEmail}?subject=${encodeURIComponent(site.contactSubject)}`;
+    const href = buildMailto({ to: site.contactEmail, subject: site.contactSubject });
+    expect(href).toBe(expected);
+    expect(sanitizeUrl(expected)).toBe(expected);
     expect(contact.contact.emailLabel).toBe(site.contactEmail);
   });
 });

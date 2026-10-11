@@ -1,1 +1,1 @@
-export const lastName = '[À COMPLÉTER : nom de famille]';
+export const lastName = 'Gypen';
