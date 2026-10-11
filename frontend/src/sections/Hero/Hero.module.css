@@ -22,10 +22,19 @@
 /* Wrapped titles repeat the padding and rounded corners on each line. */
 .highlight {
   padding-inline: var(--space-3);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--ink);
   box-decoration-break: clone;
+}
+
+/* Large rounded square: the grid stretches the placeholder to fill it. */
+.photo {
+  display: grid;
+  width: 100%;
+  max-width: var(--photo-max-width);
+  aspect-ratio: 1;
+  justify-self: end;
 }
 
 .actions {

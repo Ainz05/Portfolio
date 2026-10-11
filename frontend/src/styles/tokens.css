@@ -23,11 +23,19 @@
   --letter-spacing-tight: -0.02em;
 
   --font-size-small: 0.875rem;
+  --font-size-xsmall: 0.75rem;
 
   --gutter: 1rem;
   --section-padding-block: 4rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
   --radius-lg: 1.5rem;
+  --photo-max-width: 20.625rem;
+  --screenshot-aspect-ratio: 1.6;
   --placeholder-border: #b9c1d9;
+  /* On --ink: --on-dark-muted is 9.2:1 (text), --on-dark-border is a decorative separator. */
+  --on-dark-muted: #b9c1d9;
+  --on-dark-border: #2a3a6b;
   --placeholder-min-height: 12rem;
 
   --space-3: 0.75rem;

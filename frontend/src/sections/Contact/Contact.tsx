@@ -21,7 +21,7 @@ export function Contact({ content, email, subject, newTabLabel }: ContactProps) 
   return (
     <Section id={content.id} titleId={titleId} tone="dark">
       <div className={styles.layout}>
-        <Heading level={2} id={titleId}>
+        <Heading level={2} size={1} id={titleId}>
           {content.title}
         </Heading>
         <p className={styles.text}>{content.text}</p>

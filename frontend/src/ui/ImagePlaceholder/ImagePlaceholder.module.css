@@ -11,6 +11,8 @@
 }
 
 .neutral {
+  border-radius: var(--radius-md);
+  aspect-ratio: var(--screenshot-aspect-ratio);
   background: var(--placeholder);
   border: var(--border-width) dashed var(--placeholder-border);
 }

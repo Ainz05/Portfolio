@@ -39,6 +39,11 @@ describe('Header', () => {
     }
   });
 
+  it('uses the nav link variant for the navigation items', () => {
+    renderHeader();
+    expect(screen.getByRole('link', { name: 'Projets' }).className).toContain('nav');
+  });
+
   it('puts the skip link first in the tab order, pointing at the main content', async () => {
     renderHeader();
     const skipLink = screen.getByRole('link', { name: 'Aller au contenu' });

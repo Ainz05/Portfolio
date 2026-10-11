@@ -1,7 +1,8 @@
-/* Continues the dark contact block above it. */
+/* Continues the dark contact block, set apart by a separator and smaller, softer text. */
 .footer {
   padding-block: var(--space-5);
+  border-top: var(--border-width) solid var(--on-dark-border);
   background: var(--ink);
-  color: var(--surface);
-  font-size: var(--font-size-small);
+  color: var(--on-dark-muted);
+  font-size: var(--font-size-xsmall);
 }

@@ -3,7 +3,7 @@ import { isExternalHttpsUrl, sanitizeUrl } from '@/lib/url';
 import styles from './Link.module.css';
 import type { ReactNode } from 'react';
 
-export type LinkVariant = 'text' | 'primary' | 'secondary' | 'accent';
+export type LinkVariant = 'text' | 'nav' | 'primary' | 'secondary' | 'accent';
 
 export interface LinkProps {
   /**

@@ -5,6 +5,20 @@
 
 .text {
   color: var(--link-color);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Navigation: --ink on --bg is 15.5:1. Underline only on hover and keyboard focus. */
+.nav {
+  color: var(--ink);
+  font-size: var(--font-size-small);
+  text-decoration: none;
+}
+
+.nav:hover,
+.nav:focus-visible {
+  text-decoration: underline;
 }
 
 .link:focus-visible {

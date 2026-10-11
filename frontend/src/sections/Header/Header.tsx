@@ -28,7 +28,9 @@ export function Header({ logo, navLabel, skipLinkLabel, skipLinkHref, items }: H
             <ul className={styles.list}>
               {items.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href}>{item.label}</Link>
+                  <Link href={item.href} variant="nav">
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
