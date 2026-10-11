@@ -1,0 +1,19 @@
+.layout {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+}
+
+.text {
+  max-width: var(--reading-max-width);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

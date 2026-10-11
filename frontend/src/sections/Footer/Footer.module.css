@@ -1,0 +1,7 @@
+/* Continues the dark contact block above it. */
+.footer {
+  padding-block: var(--space-5);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: var(--font-size-small);
+}
