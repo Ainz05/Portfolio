@@ -261,3 +261,15 @@ Aucun constat CRITIQUE, ÉLEVÉ ou MOYEN. À vérifier avant mise en ligne :
 - `npm audit --omit=dev` à 0 ; réévaluation de `braces` au 2027-01-10.
 - Lighthouse ≥ 95 (prévoir un favicon).
 - Avant le premier push : Dependabot/Renovate, CI à permissions minimales.
+
+### Audit de fin de phase sections — 2026-10-11 — HEAD 4645e1a — verdict OK
+
+Aucun constat bloquant. À faire avant mise en ligne :
+- Contenus définitifs dans `data/` : adresse email publique (avec SPF, DKIM et DMARC sur le domaine d'envoi), et URL des dépôts, démos, LinkedIn et GitHub validées contre une liste d'hôtes autorisés, sans raccourcisseur ni paramètre de suivi.
+- Scan `gitleaks` ou `trufflehog` des dépôts liés ; aucune clé d'API côté client sur la démo IA.
+- CV nettoyé de ses métadonnées, avec un test d'existence du fichier dans `public/cv/`.
+- Photo et captures d'écran hébergées en local, sans EXIF.
+- Aucun placeholder `[À COMPLÉTER : …]` dans `dist/`.
+- Déploiement sur le VPS, puis la section « Vérification après déploiement ».
+- Lighthouse ≥ 95 ; `npm audit --omit=dev` à 0.
+- Au premier push : Dependabot ou Renovate, et CI à permissions minimales.

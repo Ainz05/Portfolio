@@ -33,9 +33,8 @@
   --photo-max-width: 20.625rem;
   --screenshot-aspect-ratio: 1.6;
   --placeholder-border: #b9c1d9;
-  /* On --ink: --on-dark-muted is 9.2:1 (text), --on-dark-border is a decorative separator. */
+  /* On --ink: --on-dark-muted is 9.2:1 (secondary text). */
   --on-dark-muted: #b9c1d9;
-  --on-dark-border: #2a3a6b;
   --placeholder-min-height: 12rem;
 
   --space-3: 0.75rem;
@@ -50,7 +49,8 @@
      --accent on --ink is about 12:1. */
   --focus-ring-color: var(--primary);
   /* Any dark context must redefine both --link-color and --focus-ring-color.
-     Text links: --primary is below 4.5:1 on --ink, so dark contexts redefine it. */
+     Text links: --primary is below 4.5:1 on --ink, so dark contexts redefine it
+     (--surface is 16.5:1; the focus ring stays --accent). */
   --link-color: var(--primary);
   --focus-ring-width: 0.1875rem;
   --focus-ring-offset: 0.1875rem;
