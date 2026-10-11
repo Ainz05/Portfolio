@@ -1,0 +1,33 @@
+/* Mobile first: text, then screenshot. */
+.card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-3);
+  align-content: center;
+  justify-items: start;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .card {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--section-padding-block);
+  }
+
+  .mirrored .media {
+    order: -1;
+  }
+}

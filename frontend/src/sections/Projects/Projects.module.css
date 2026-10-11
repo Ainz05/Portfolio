@@ -1,0 +1,17 @@
+.header {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--section-padding-block);
+}
+
+.subtitle {
+  color: var(--muted);
+}
+
+.list {
+  display: grid;
+  gap: var(--section-padding-block);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
