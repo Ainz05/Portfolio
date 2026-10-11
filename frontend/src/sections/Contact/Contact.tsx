@@ -27,7 +27,7 @@ export function Contact({ content, email, subject, newTabLabel }: ContactProps) 
         <p className={styles.text}>{content.text}</p>
         <ul className={styles.actions}>
           <li>
-            <Link href={emailHref} variant="accent">
+            <Link href={emailHref} variant="accent" context={content.emailContext}>
               {content.emailLabel}
             </Link>
           </li>

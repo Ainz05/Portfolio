@@ -5,6 +5,7 @@ import * as navigation from '@/data/navigation';
 import * as projects from '@/data/projects';
 import * as site from '@/data/site';
 import * as skills from '@/data/skills';
+import { hasControlCharacter, hasInvisibleFormatting } from '@/lib/characters';
 import { sanitizeInternalHref } from '@/lib/internalHref';
 import { buildMailto } from '@/lib/mailto';
 import { sanitizeUrl } from '@/lib/url';
@@ -95,6 +96,13 @@ describe('site content', () => {
     for (const placeholder of bracketed) {
       expect(PLACEHOLDER.test(placeholder) || SPEC_PLACEHOLDERS.includes(placeholder)).toBe(true);
     }
+  });
+
+  it('has no invisible or control character in any text', () => {
+    const offenders = allStrings.filter(
+      (text) => hasInvisibleFormatting(text) || hasControlCharacter(text, { allowNewlines: true }),
+    );
+    expect(offenders).toEqual([]);
   });
 
   it('builds a safe mailto from the configured subject', () => {

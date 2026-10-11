@@ -7,6 +7,7 @@ export const contact: ContactContent = {
   title: 'On discute ?',
   text: "Si vous avez un stage de 15 semaines en DevOps, IA ou MLOps, j'aimerais beaucoup en parler.",
   emailLabel: contactEmail,
+  emailContext: 'écrire à Florian',
   socialLinks: [
     { label: 'LinkedIn', href: '[À COMPLÉTER : URL LinkedIn]' },
     { label: 'GitHub', href: '[À COMPLÉTER : URL GitHub]' },

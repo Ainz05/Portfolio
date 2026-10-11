@@ -4,6 +4,7 @@ import type { ContactContent } from '@/types/sections';
 import { Contact } from './Contact';
 
 const NEW_TAB = "(s'ouvre dans un nouvel onglet)";
+const EMAIL_CONTEXT = 'écrire à Florian';
 const SUBJECT = 'Stage DevOps / IA / MLOps — prise de contact';
 const EMAIL_PLACEHOLDER = '[À COMPLÉTER : adresse email publique]';
 
@@ -12,6 +13,7 @@ const CONTENT: ContactContent = {
   title: 'On discute ?',
   text: 'Un texte.',
   emailLabel: 'contact@example.com',
+  emailContext: EMAIL_CONTEXT,
   socialLinks: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/example' },
     { label: 'GitHub', href: '[À COMPLÉTER : URL GitHub]' },
@@ -36,7 +38,9 @@ describe('Contact', () => {
 
   it('links a valid address with an encoded mailto carrying the subject, in the same tab', () => {
     renderContact('contact@example.com');
-    const link = screen.getByRole('link', { name: 'contact@example.com' });
+    const link = screen.getByRole('link', {
+      name: `contact@example.com, ${EMAIL_CONTEXT}`,
+    });
     expect(link).toHaveAttribute(
       'href',
       `mailto:contact@example.com?subject=${encodeURIComponent(SUBJECT)}`,
@@ -49,6 +53,7 @@ describe('Contact', () => {
     const content = { ...CONTENT, emailLabel: EMAIL_PLACEHOLDER };
     const { container } = renderContact(EMAIL_PLACEHOLDER, content);
     expect(screen.getByText(EMAIL_PLACEHOLDER)).toBeVisible();
+    expect(screen.queryByText(/écrire à Florian/)).toBeNull();
     expect(container.querySelector('a[href^="mailto:"]')).toBeNull();
   });
 

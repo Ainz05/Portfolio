@@ -25,6 +25,8 @@ export interface ContactContent {
   readonly text: string;
   /** Visible text of the email button (placeholder until the public address is known). */
   readonly emailLabel: string;
+  /** Hidden text appended to the email link's accessible name, so it says what it does. */
+  readonly emailContext: string;
   readonly socialLinks: readonly LinkItem[];
   readonly footer: string;
 }
