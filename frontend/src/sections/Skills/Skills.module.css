@@ -1,0 +1,24 @@
+/* Mobile first: one column. */
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.columns {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.closing {
+  color: var(--muted);
+}
+
+@media (min-width: 48rem) {
+  .columns {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--section-padding-block);
+  }
+}

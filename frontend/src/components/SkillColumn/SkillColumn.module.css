@@ -1,0 +1,9 @@
+.column {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+.description {
+  color: var(--muted);
+}
