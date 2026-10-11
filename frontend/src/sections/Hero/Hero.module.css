@@ -1,0 +1,43 @@
+/* Mobile first: text, then photo. */
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+}
+
+.eyebrow,
+.paragraph {
+  color: var(--muted);
+}
+
+.paragraph {
+  font-size: var(--font-size-4);
+}
+
+/* Wrapped titles repeat the padding and rounded corners on each line. */
+.highlight {
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--accent);
+  color: var(--ink);
+  box-decoration-break: clone;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (min-width: 48rem) {
+  .layout {
+    grid-template-columns: 1.4fr 1fr;
+    align-items: center;
+    gap: var(--section-padding-block);
+  }
+}

@@ -1,6 +1,7 @@
 import type { HeroContent } from '@/types/sections';
 
 export const hero: HeroContent = {
+  id: 'accueil',
   eyebrow: 'Bienvenue sur mon portfolio.',
   titleBefore: "Salut, moi c'est ",
   titleHighlight: 'Florian',

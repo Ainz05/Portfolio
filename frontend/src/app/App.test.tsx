@@ -8,6 +8,13 @@ describe('App', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
   });
 
+  it('uses each id attribute only once', () => {
+    const { container } = render(<App />);
+    const ids = Array.from(container.querySelectorAll('[id]'), (element) => element.id);
+    expect(ids.length).toBeGreaterThan(0);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<App />);
     const { violations } = await axe(container);

@@ -1,5 +1,3 @@
-export const siteTitle = 'Portfolio de Florian';
-
 /** Public by nature (mailto:). Replace the placeholder with the real address. */
 export const contactEmail = '[À COMPLÉTER : adresse email publique]';
 

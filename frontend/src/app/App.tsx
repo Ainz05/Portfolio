@@ -1,9 +1,10 @@
+import { hero } from '@/data/hero';
 import { navigation } from '@/data/navigation';
-import { siteTitle } from '@/data/site';
 import { Header } from '@/sections/Header';
+import { Hero } from '@/sections/Hero';
 import styles from './App.module.css';
 
-// Target of the skip link; sections will be added inside <main>.
+// Target of the skip link; further sections are added inside <main>.
 const MAIN_ID = 'contenu';
 
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
         items={navigation.items}
       />
       <main id={MAIN_ID} tabIndex={-1} className={styles.main}>
-        <h1>{siteTitle}</h1>
+        <Hero content={hero} />
       </main>
     </>
   );

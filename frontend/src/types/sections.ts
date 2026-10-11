@@ -1,6 +1,7 @@
 import type { LinkItem } from './link';
 
 export interface HeroContent {
+  readonly id: string;
   readonly eyebrow: string;
   /** The title is split so the first name can be highlighted without HTML in data. */
   readonly titleBefore: string;

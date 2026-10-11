@@ -1,5 +1,6 @@
 import * as about from '@/data/about';
 import * as contact from '@/data/contact';
+import * as hero from '@/data/hero';
 import * as navigation from '@/data/navigation';
 import * as projects from '@/data/projects';
 import * as site from '@/data/site';
@@ -49,10 +50,19 @@ const allStrings = collectStrings(allData);
 const allHrefs = collectHrefs(allData);
 
 describe('site content', () => {
-  it('has unique section ids matching the navigation anchors', () => {
-    const ids = [projects.projects.id, skills.skills.id, about.about.id, contact.contact.id];
+  it('has unique section ids, and every navigation anchor targets a section', () => {
+    const ids = [
+      hero.hero.id,
+      projects.projects.id,
+      skills.skills.id,
+      about.about.id,
+      contact.contact.id,
+    ];
     expect(new Set(ids).size).toBe(ids.length);
-    expect(navigation.navigation.items.map((item) => item.href)).toEqual(ids.map((id) => `#${id}`));
+    const anchors = ids.map((id) => `#${id}`);
+    for (const item of navigation.navigation.items) {
+      expect(anchors).toContain(item.href);
+    }
   });
 
   it('has unique project and skill ids', () => {
