@@ -45,7 +45,11 @@ describe('Projects', () => {
 
   it('passes the new-tab label to the project links', () => {
     render(<Projects content={CONTENT} newTabLabel={NEW_TAB} />);
-    expect(screen.getAllByRole('link', { name: `Voir le code ${NEW_TAB}` })).toHaveLength(3);
+    for (const title of ['Alpha', 'Bravo', 'Charlie']) {
+      expect(
+        screen.getByRole('link', { name: `Voir le code, ${title} ${NEW_TAB}` }),
+      ).toBeInTheDocument();
+    }
   });
 
   it('has no accessibility violations', async () => {

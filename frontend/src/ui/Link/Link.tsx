@@ -14,6 +14,11 @@ export interface LinkProps {
   readonly variant?: LinkVariant;
   /** Announced to assistive technologies when the link opens a new tab. Without it, no new tab. */
   readonly newTabLabel?: string;
+  /**
+   * Visually hidden text that tells identical labels apart for screen reader users
+   * (e.g. the project title after "Voir le code"). Ignored when blank or when no link is rendered.
+   */
+  readonly context?: string;
   readonly children: ReactNode;
 }
 
@@ -21,7 +26,29 @@ function classNames(variant: LinkVariant): string {
   return `${styles.link ?? ''} ${styles[variant] ?? ''}`;
 }
 
-export function Link({ href, variant = 'text', newTabLabel, children }: LinkProps) {
+interface HiddenSuffixProps {
+  readonly context: string | undefined;
+  readonly newTabLabel: string | undefined;
+}
+
+// Hidden parts of the accessible name: "label, context (new tab hint)". The comma gives a
+// natural pause when read aloud.
+function HiddenSuffix({ context, newTabLabel }: HiddenSuffixProps) {
+  const hasContext = context !== undefined && context.trim() !== '';
+  return (
+    <>
+      {hasContext ? <span className={styles.visuallyHidden}>, {context}</span> : null}
+      {newTabLabel !== undefined ? (
+        <>
+          {' '}
+          <span className={styles.visuallyHidden}>{newTabLabel}</span>
+        </>
+      ) : null}
+    </>
+  );
+}
+
+export function Link({ href, variant = 'text', newTabLabel, context, children }: LinkProps) {
   const safeHref = sanitizeUrl(href) ?? sanitizeInternalHref(href);
   if (safeHref === null) {
     // An invalid URL must never produce an <a>: show the text only, styled as plain text so it
@@ -38,12 +65,7 @@ export function Link({ href, variant = 'text', newTabLabel, children }: LinkProp
       {...(opensNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       {children}
-      {opensNewTab ? (
-        <>
-          {' '}
-          <span className={styles.visuallyHidden}>{newTabLabel}</span>
-        </>
-      ) : null}
+      <HiddenSuffix context={context} newTabLabel={opensNewTab ? newTabLabel : undefined} />
     </a>
   );
 }

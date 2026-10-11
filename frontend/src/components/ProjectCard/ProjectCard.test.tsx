@@ -36,7 +36,7 @@ describe('ProjectCard', () => {
 
   it('opens a real https link in a new tab safely, with an accessible hint', () => {
     render(<ProjectCard project={PROJECT} newTabLabel={NEW_TAB} />);
-    const link = screen.getByRole('link', { name: `Voir le code ${NEW_TAB}` });
+    const link = screen.getByRole('link', { name: `Voir le code, Mon projet ${NEW_TAB}` });
     expect(link).toHaveAttribute('href', 'https://example.com/code');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
@@ -65,6 +65,22 @@ describe('ProjectCard', () => {
     render(<ProjectCard project={hostile} newTabLabel={NEW_TAB} />);
     expect(screen.getByText('Piège')).toBeInTheDocument();
     expect(screen.queryByRole('link')).toBeNull();
+  });
+
+  it('gives the same link label a distinct accessible name per project', () => {
+    const other = { ...PROJECT, id: 'other', title: 'Autre projet' };
+    render(
+      <>
+        <ProjectCard project={PROJECT} newTabLabel={NEW_TAB} />
+        <ProjectCard project={other} newTabLabel={NEW_TAB} />
+      </>,
+    );
+    expect(
+      screen.getByRole('link', { name: `Voir le code, Mon projet ${NEW_TAB}` }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: `Voir le code, Autre projet ${NEW_TAB}` }),
+    ).toBeInTheDocument();
   });
 
   it('has no accessibility violations', async () => {

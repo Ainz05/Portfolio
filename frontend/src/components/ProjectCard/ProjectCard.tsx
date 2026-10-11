@@ -30,7 +30,7 @@ export function ProjectCard({ project, newTabLabel, mirrored = false }: ProjectC
         <ul className={styles.list}>
           {project.links.map((link) => (
             <li key={link.label}>
-              <Link href={link.href} newTabLabel={newTabLabel}>
+              <Link href={link.href} newTabLabel={newTabLabel} context={project.title}>
                 {link.label}
               </Link>
             </li>
