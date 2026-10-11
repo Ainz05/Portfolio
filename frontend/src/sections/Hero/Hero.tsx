@@ -1,12 +1,15 @@
+import { resolveImage, type ImageUrls } from '@/lib/images';
 import type { HeroContent } from '@/types/sections';
 import { Heading } from '@/ui/Heading';
-import { ImagePlaceholder } from '@/ui/ImagePlaceholder';
 import { Link } from '@/ui/Link';
+import { Picture } from '@/ui/Picture';
 import { Section } from '@/ui/Section';
 import styles from './Hero.module.css';
 
 export interface HeroProps {
   readonly content: HeroContent;
+  /** Build URLs of the images in src/assets/images/, by file name. */
+  readonly imageUrls: ImageUrls;
 }
 
 interface HeroTitleProps {
@@ -26,7 +29,7 @@ function HeroTitle({ content, id }: HeroTitleProps) {
   );
 }
 
-export function Hero({ content }: HeroProps) {
+export function Hero({ content, imageUrls }: HeroProps) {
   const titleId = `${content.id}-titre`;
   return (
     <Section id={content.id} titleId={titleId} tone="light">
@@ -45,7 +48,12 @@ export function Hero({ content }: HeroProps) {
           </div>
         </div>
         <div className={styles.photo}>
-          <ImagePlaceholder label={content.photoPlaceholder} tone="accent" />
+          <Picture
+            image={resolveImage(content.photo, imageUrls)}
+            placeholder={content.photoPlaceholder}
+            tone="accent"
+            priority
+          />
         </div>
       </div>
     </Section>

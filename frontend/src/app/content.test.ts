@@ -6,10 +6,17 @@ import * as projects from '@/data/projects';
 import * as site from '@/data/site';
 import * as skills from '@/data/skills';
 import { hasControlCharacter, hasInvisibleFormatting } from '@/lib/characters';
+import { resolveImage } from '@/lib/images';
 import { sanitizeInternalHref } from '@/lib/internalHref';
 import { buildMailto } from '@/lib/mailto';
 import { sanitizeUrl } from '@/lib/url';
-import { allData, collectHrefs, collectStrings } from './dataCollectors.test-utils';
+import {
+  allData,
+  collectHrefs,
+  collectImageRefs,
+  collectStrings,
+} from './dataCollectors.test-utils';
+import { imageUrls } from './images';
 
 const PLACEHOLDER = /^\[À COMPLÉTER : [^\]]+\]$/;
 // Placeholder forms imposed verbatim by SPEC.md.
@@ -68,6 +75,24 @@ describe('site content', () => {
     for (const placeholder of bracketed) {
       expect(PLACEHOLDER.test(placeholder) || SPEC_PLACEHOLDERS.includes(placeholder)).toBe(true);
     }
+  });
+
+  it('keeps link-like strings in href keys only', () => {
+    // Image files are bare names (checked below), so they never look like links.
+    const linkLike = /^(https?:|mailto:|\/|#)/i;
+    const strays = collectStrings(allData, 'href').filter((text) => linkLike.test(text));
+    expect(strays).toEqual([]);
+  });
+
+  it('declares only images that resolve, with a valid name, alt text and size', () => {
+    for (const ref of collectImageRefs(allData)) {
+      expect(resolveImage(ref, imageUrls), `unusable image: ${ref.file}`).not.toBeNull();
+    }
+  });
+
+  it('has no orphan image: every file of src/assets/images/ is declared in data/', () => {
+    const declared = collectImageRefs(allData).map((ref) => ref.file);
+    expect(Object.keys(imageUrls).sort()).toEqual([...new Set(declared)].sort());
   });
 
   it('has no invisible or control character in any text', () => {

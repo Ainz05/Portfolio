@@ -26,7 +26,7 @@ const CONTENT: ProjectsContent = {
 
 describe('Projects', () => {
   it('is a region named by its level-two heading, with the anchor id', () => {
-    render(<Projects content={CONTENT} newTabLabel={NEW_TAB} />);
+    render(<Projects content={CONTENT} newTabLabel={NEW_TAB} imageUrls={{}} />);
     const region = screen.getByRole('region', { name: 'Mes projets' });
     expect(region).toHaveAttribute('id', 'projets');
     expect(within(region).getByRole('heading', { level: 2, name: 'Mes projets' })).toBeVisible();
@@ -34,7 +34,7 @@ describe('Projects', () => {
   });
 
   it('lists one article with a level-three heading per project, in order', () => {
-    render(<Projects content={CONTENT} newTabLabel={NEW_TAB} />);
+    render(<Projects content={CONTENT} newTabLabel={NEW_TAB} imageUrls={{}} />);
     expect(screen.getAllByRole('article')).toHaveLength(3);
     expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
       'Alpha',
@@ -44,7 +44,7 @@ describe('Projects', () => {
   });
 
   it('passes the new-tab label to the project links', () => {
-    render(<Projects content={CONTENT} newTabLabel={NEW_TAB} />);
+    render(<Projects content={CONTENT} newTabLabel={NEW_TAB} imageUrls={{}} />);
     for (const title of ['Alpha', 'Bravo', 'Charlie']) {
       expect(
         screen.getByRole('link', { name: `Voir le code, ${title} ${NEW_TAB}` }),
@@ -55,7 +55,7 @@ describe('Projects', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(
       <main>
-        <Projects content={CONTENT} newTabLabel={NEW_TAB} />
+        <Projects content={CONTENT} newTabLabel={NEW_TAB} imageUrls={{}} />
       </main>,
     );
     const { violations } = await axe(container);

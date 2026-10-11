@@ -1,4 +1,5 @@
 import { ProjectCard } from '@/components/ProjectCard';
+import type { ImageUrls } from '@/lib/images';
 import type { ProjectsContent } from '@/types/project';
 import { Heading } from '@/ui/Heading';
 import { Section } from '@/ui/Section';
@@ -8,9 +9,10 @@ export interface ProjectsProps {
   readonly content: ProjectsContent;
   /** Announced on links opening a new tab. */
   readonly newTabLabel: string;
+  readonly imageUrls: ImageUrls;
 }
 
-export function Projects({ content, newTabLabel }: ProjectsProps) {
+export function Projects({ content, newTabLabel, imageUrls }: ProjectsProps) {
   const titleId = `${content.id}-titre`;
   return (
     <Section id={content.id} titleId={titleId} tone="white">
@@ -23,7 +25,12 @@ export function Projects({ content, newTabLabel }: ProjectsProps) {
       <ul className={styles.list}>
         {content.projects.map((project, index) => (
           <li key={project.id}>
-            <ProjectCard project={project} newTabLabel={newTabLabel} mirrored={index % 2 === 1} />
+            <ProjectCard
+              project={project}
+              newTabLabel={newTabLabel}
+              imageUrls={imageUrls}
+              mirrored={index % 2 === 1}
+            />
           </li>
         ))}
       </ul>

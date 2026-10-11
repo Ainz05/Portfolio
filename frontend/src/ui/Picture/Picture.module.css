@@ -1,0 +1,22 @@
+/*
+ * Same radii and proportions as ImagePlaceholder, whatever the size of the file.
+ * The width and height attributes of <img> become CSS sizes: `height: auto` lets aspect-ratio
+ * decide the height instead, while the attributes still reserve the space before loading.
+ */
+.picture {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.neutral {
+  aspect-ratio: var(--screenshot-aspect-ratio);
+  border-radius: var(--radius-md);
+}
+
+/* Square like its container in the hero, so the photo never depends on a percentage height. */
+.accent {
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+}

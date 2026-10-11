@@ -1,3 +1,4 @@
+import type { ImageRef } from './image';
 import type { LinkItem } from './link';
 
 export interface Project {
@@ -10,6 +11,8 @@ export interface Project {
   readonly links: readonly LinkItem[];
   /** Text shown in the dashed block until a real screenshot exists. */
   readonly screenshotPlaceholder: string;
+  /** Real screenshot; the placeholder is shown while it is absent. */
+  readonly screenshot?: ImageRef;
 }
 
 export interface ProjectsContent {

@@ -24,6 +24,7 @@ const DEMO_HOSTS: readonly string[] = [];
 
 const PLACEHOLDER = /^\[À COMPLÉTER : [^\]]+\]$/;
 const SHORTENER_HOSTS = ['bit.ly', 't.co', 'tinyurl.com', 'lnkd.in', 'goo.gl', 'ow.ly', 'is.gd'];
+const PROFILE_HOSTS = ['github.com', 'www.linkedin.com'];
 const LINKEDIN_PROFILE = /^\/in\/[A-Za-z0-9-]+\/?$/;
 
 interface LinkRules {
@@ -34,6 +35,9 @@ interface LinkRules {
 }
 
 function pathProblem(url: URL, githubAccount: string): string | null {
+  if (url.pathname.includes('%') && PROFILE_HOSTS.includes(url.hostname)) {
+    return 'encoded characters in the path';
+  }
   if (url.hostname === 'github.com') {
     const prefix = `/${githubAccount.toLowerCase()}`;
     const path = url.pathname.toLowerCase();
@@ -132,6 +136,9 @@ describe('link rules', () => {
     'https://github.com/compte-test-bis/repo',
     'https://github.com/compte-test/repo?utm_source=x',
     'https://github.com/compte-test/repo#readme',
+    'https://github.com/compte-test/..%2Fautre',
+    'https://github.com/compte-test/%2e%2e/autre',
+    'https://www.linkedin.com/in/slug%2F..',
     'https://www.linkedin.com/company/x',
     'https://bit.ly/abc',
     'https://lnkd.in/abc',

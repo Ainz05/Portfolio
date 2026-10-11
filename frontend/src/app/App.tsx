@@ -13,6 +13,7 @@ import { Hero } from '@/sections/Hero';
 import { Projects } from '@/sections/Projects';
 import { Skills } from '@/sections/Skills';
 import styles from './App.module.css';
+import { imageUrls } from './images';
 
 // Target of the skip link; the footer is a separate landmark, outside <main>.
 const MAIN_ID = 'contenu';
@@ -28,8 +29,8 @@ export default function App() {
         items={navigation.items}
       />
       <main id={MAIN_ID} tabIndex={-1} className={styles.main}>
-        <Hero content={hero} />
-        <Projects content={projects} newTabLabel={newTabLabel} />
+        <Hero content={hero} imageUrls={imageUrls} />
+        <Projects content={projects} newTabLabel={newTabLabel} imageUrls={imageUrls} />
         <Skills content={skills} />
         <About content={about} />
         <Contact

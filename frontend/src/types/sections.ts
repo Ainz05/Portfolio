@@ -1,3 +1,4 @@
+import type { ImageRef } from './image';
 import type { LinkItem } from './link';
 
 export interface HeroContent {
@@ -11,6 +12,8 @@ export interface HeroContent {
   readonly primaryAction: LinkItem;
   readonly secondaryAction: LinkItem;
   readonly photoPlaceholder: string;
+  /** Real photo; the placeholder is shown while it is absent. */
+  readonly photo?: ImageRef;
 }
 
 export interface AboutContent {
