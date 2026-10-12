@@ -11,3 +11,9 @@ Thumbs.db
 .vscode/
 .idea/
 *.map
+# Ansible / Terraform
+*.retry
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvarsansible/inventory.ini
