@@ -1,0 +1,153 @@
+---
+- name: Préparer le serveur du portfolio
+  hosts: web
+  become: true
+  vars:
+    domain: ainz05.com
+
+  tasks:
+    - name: Installer les paquets de base
+      ansible.builtin.apt:
+        name:
+          - ufw
+          - fail2ban
+          - nginx
+          - ca-certificates
+          - curl
+          - python3-docker
+          - python3-systemd
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    # Pare feu UFW
+    - name: Autoriser SSH, HTTP et HTTPS
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "22"
+        - "80"
+        - "443"
+
+    - name: Refuser tout le reste en entrée et activer ufw
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    # fail2ban
+    - name: Configurer la prison SSH de fail2ban
+      ansible.builtin.copy:
+        dest: /etc/fail2ban/jail.d/sshd-local.conf
+        mode: "0644"
+        content: |
+          [sshd]
+          enabled = true
+          backend = systemd
+          journalmatch = _SYSTEMD_UNIT=sshd.service + _COMM=sshd
+          maxretry = 5
+          findtime = 10m
+          bantime = 1h
+      notify: Redémarrer fail2ban
+
+    - name: Démarrer fail2ban au boot
+      ansible.builtin.service:
+        name: fail2ban
+        state: started
+        enabled: true
+    
+    - name: Appliquer tout de suite le redémarrage de fail2ban
+      ansible.builtin.meta: flush_handlers
+
+    - name: Vérifier le statut de fail2ban
+      ansible.builtin.command: fail2ban-client status sshd
+      register: f2ban_status
+      changed_when: false
+      retries: 5
+      delay: 2
+      until: f2ban_status.rc == 0
+
+    # Docker
+    - name: Créer le dossier des clés apt
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Télécharger la clé GPG de Docker
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
+
+    - name: Ajouter le dépôt apt de Docker
+      ansible.builtin.deb822_repository:
+        name: docker
+        types: deb
+        uris: https://download.docker.com/linux/debian
+        suites: "{{ ansible_facts['distribution_release'] }}"
+        components: stable
+        architectures: amd64
+        signed_by: /etc/apt/keyrings/docker.asc
+        state: present
+
+    - name: Installer Docker Engine
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Démarrer Docker au boot
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    # --- Nginx
+    - name: Installer la configuration Nginx du portfolio
+      ansible.builtin.template:
+        src: portfolio.conf.j2
+        dest: /etc/nginx/sites-available/portfolio
+        mode: "0644"
+      notify: Recharger nginx
+
+    - name: Activer le site du portfolio
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/portfolio
+        dest: /etc/nginx/sites-enabled/portfolio
+        state: link
+      notify: Recharger nginx
+
+    - name: Désactiver le site par défaut
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Recharger nginx
+
+    - name: Vérifier la syntaxe de Nginx
+      ansible.builtin.command: nginx -t
+      changed_when: false
+
+    - name: Démarrer nginx au boot
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Recharger nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+
+    - name: Redémarrer fail2ban
+      ansible.builtin.service:
+        name: fail2ban
+        state: restarted
