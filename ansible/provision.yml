@@ -110,7 +110,24 @@
         state: started
         enabled: true
 
-    # --- Nginx
+    - name: Créer le dossier des extraits de configuration Nginx
+      ansible.builtin.file:
+        path: /etc/nginx/snippets
+        state: directory
+        mode: "0755"
+
+    - name: Déposer les en-têtes de sécurité Nginx
+      ansible.builtin.copy:
+        dest: /etc/nginx/snippets/security-headers.conf
+        mode: "0644"
+        content: |
+          add_header X-Content-Type-Options "nosniff" always;
+          add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+          add_header X-Frame-Options "DENY" always;
+          add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+      notify: Recharger nginx
+
+    # Nginx
     - name: Installer la configuration Nginx du portfolio
       ansible.builtin.template:
         src: portfolio.conf.j2

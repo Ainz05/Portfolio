@@ -16,4 +16,5 @@ Thumbs.db
 .terraform/
 *.tfstate
 *.tfstate.*
-*.tfvarsansible/inventory.ini
+*.tfvars
+ansible/inventory.ini
