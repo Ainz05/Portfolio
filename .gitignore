@@ -18,3 +18,11 @@ Thumbs.db
 *.tfstate.*
 *.tfvars
 ansible/inventory.ini
+
+# Secrets
+*.pem
+id_ed25519*
+id_rsa*
+.vault_pass*
+
+.claude/settings.local.json
