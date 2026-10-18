@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list && \
     apt-get update && apt-get install -y --no-install-recommends docker-ce-cli && \
     python3 -m venv /opt/ansible && /opt/ansible/bin/pip install --no-cache-dir ansible && \
-    ln -s /opt/ansible/bin/ansible /usr/local/bin/ansible && \
-    ln -s /opt/ansible/bin/ansible-playbook /usr/local/bin/ansible-playbook && \
+    for b in /opt/ansible/bin/ansible*; do ln -s "$b" "/usr/local/bin/$(basename "$b")"; done && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 USER jenkins
 RUN jenkins-plugin-cli --plugins "git workflow-aggregator credentials-binding ssh-agent docker-workflow json-path-api"
