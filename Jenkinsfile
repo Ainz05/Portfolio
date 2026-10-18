@@ -48,12 +48,19 @@ pipeline {
         withCredentials([sshUserPrivateKey(credentialsId: 'deploy-ssh',
             keyFileVariable: 'SSH_KEY')]) {
           dir('ansible') {
-            sh 'ansible-playbook -i inventory.ci.ini deploy.yml -e image_tag=$TAG --private-key "$SSH_KEY"'
+            sh '''
+              KEY="$(mktemp)"
+              trap 'rm -f "$KEY"' EXIT
+              tr -d '\\r' < "$SSH_KEY" > "$KEY"
+              [ -z "$(tail -c1 "$KEY")" ] || echo >> "$KEY"
+              chmod 600 "$KEY"
+              ssh-keygen -y -f "$KEY" > /dev/null
+              ansible-playbook -i inventory.ci.ini deploy.yml -e image_tag=$TAG --private-key "$KEY"
+            '''
           }
         }
       }
     }
-  }
 
   post {
     always {
