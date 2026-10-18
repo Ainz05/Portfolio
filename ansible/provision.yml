@@ -4,6 +4,10 @@
   become: true
   vars:
     domain: ainz05.com
+    tls_names:
+      - "{{ domain }}"
+      - "www.{{ domain }}"
+    certbot_email: gypenflorian01@gmail.com
 
   tasks:
     - name: Installer les paquets de base
@@ -16,6 +20,7 @@
           - curl
           - python3-docker
           - python3-systemd
+          - certbot
         state: present
         update_cache: true
         cache_valid_time: 3600
@@ -128,11 +133,24 @@
       notify: Recharger nginx
 
     # Nginx
+    - name: Créer le dossier de validation Let's Encrypt
+      ansible.builtin.file:
+        path: /var/www/letsencrypt
+        state: directory
+        mode: "0755"
+
+    - name: Le certificat existe-t-il déjà ?
+      ansible.builtin.stat:
+        path: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+      register: cert_before
+
     - name: Installer la configuration Nginx du portfolio
       ansible.builtin.template:
         src: portfolio.conf.j2
         dest: /etc/nginx/sites-available/portfolio
         mode: "0644"
+      vars:
+        tls_enabled: "{{ cert_before.stat.exists }}"
       notify: Recharger nginx
 
     - name: Activer le site du portfolio
@@ -157,6 +175,52 @@
         name: nginx
         state: started
         enabled: true
+
+    - name: Appliquer la configuration HTTP tout de suite
+      ansible.builtin.meta: flush_handlers
+
+    - name: Essai à blanc de l'émission (dans environnement de test)
+      ansible.builtin.command: >
+        certbot certonly --webroot -w /var/www/letsencrypt --dry-run
+        --non-interactive --agree-tos --no-eff-email
+        -m {{ certbot_email }} -d {{ tls_names | join(' -d ') }}
+      args:
+        creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+      changed_when: false
+
+    - name: Obtenir le certificat Let's Encrypt
+      ansible.builtin.command: >
+        certbot certonly --webroot -w /var/www/letsencrypt
+        --non-interactive --agree-tos --no-eff-email
+        -m {{ certbot_email }} -d {{ tls_names | join(' -d ') }}
+      args:
+        creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+
+    - name: Recharger nginx après chaque renouvellement
+      ansible.builtin.copy:
+        dest: /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          systemctl reload nginx
+
+    - name: Le certificat existe-t-il maintenant ?
+      ansible.builtin.stat:
+        path: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+      register: cert_after
+
+    - name: Configuration Nginx finale (avec HTTPS)
+      ansible.builtin.template:
+        src: portfolio.conf.j2
+        dest: /etc/nginx/sites-available/portfolio
+        mode: "0644"
+      vars:
+        tls_enabled: "{{ cert_after.stat.exists }}"
+      notify: Recharger nginx
+
+    - name: Vérifier la syntaxe finale de Nginx
+      ansible.builtin.command: nginx -t
+      changed_when: false
 
   handlers:
     - name: Recharger nginx
