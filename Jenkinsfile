@@ -45,14 +45,12 @@ pipeline {
 
     stage('Déployer') {
       steps {
-        withCredentials([sshUserPrivateKey(credentialsId: 'deploy-ssh',
-            keyFileVariable: 'SSH_KEY')]) {
+        withCredentials([string(credentialsId: 'deploy-ssh-b64', variable: 'KEY_B64')]) {
           dir('ansible') {
             sh '''
               KEY="$(mktemp)"
               trap 'rm -f "$KEY"' EXIT
-              tr -d '\\r' < "$SSH_KEY" > "$KEY"
-              [ -z "$(tail -c1 "$KEY")" ] || echo >> "$KEY"
+              printf '%s' "$KEY_B64" | tr -d '\\r\\n ' | base64 -d > "$KEY"
               chmod 600 "$KEY"
               ssh-keygen -y -f "$KEY" > /dev/null
               ansible-playbook -i inventory.ci.ini deploy.yml -e image_tag=$TAG --private-key "$KEY"
