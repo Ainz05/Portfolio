@@ -1,0 +1,37 @@
+---
+- name: Déployer le portfolio
+  hosts: web
+  become: true
+  vars:
+    image_name: ghcr.io/ainz05/portfolio
+
+  tasks:
+    - name: Vérifier que la version à déployer est fournie
+      ansible.builtin.assert:
+        that:
+          - image_tag is defined
+          - image_tag | length > 0
+        fail_msg: "Fournis la version : -e image_tag=<étiquette>"
+
+    - name: Télécharger l'image
+      community.docker.docker_image_pull:
+        name: "{{ image_name }}"
+        tag: "{{ image_tag }}"
+
+    - name: Lancer le conteneur du portfolio
+      community.docker.docker_container:
+        name: portfolio
+        image: "{{ image_name }}:{{ image_tag }}"
+        state: started
+        restart_policy: unless-stopped
+        published_ports:
+          - "127.0.0.1:8080:80"
+
+    - name: Vérifier que le site répond
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8080/
+        status_code: 200
+      register: site
+      retries: 5
+      delay: 2
+      until: site.status == 200
