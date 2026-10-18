@@ -51,7 +51,7 @@
           [sshd]
           enabled = true
           backend = systemd
-          journalmatch = _SYSTEMD_UNIT=sshd.service + _COMM=sshd
+          journalmatch = _SYSTEMD_UNIT=ssh.service + _COMM=sshd
           maxretry = 5
           findtime = 10m
           bantime = 1h
@@ -108,6 +108,22 @@
           - docker-compose-plugin
         state: present
         update_cache: true
+
+    - name: Créer l'utilisateur de déploiement
+      ansible.builtin.user:
+        name: deploy
+        shell: /bin/bash
+        groups: docker
+        append: true
+        password_lock: true
+        create_home: true
+
+    - name: Autoriser la clé SSH de Jenkins pour deploy
+      ansible.posix.authorized_key:
+        user: deploy
+        key: "{{ lookup('file', playbook_dir + '/files/jenkins_deploy.pub') }}"
+        key_options: "no-agent-forwarding,no-port-forwarding,no-X11-forwarding"
+        exclusive: true
 
     - name: Démarrer Docker au boot
       ansible.builtin.service:

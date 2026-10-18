@@ -1,7 +1,7 @@
 ---
 - name: Déployer le portfolio
   hosts: web
-  become: true
+  become: false
   vars:
     image_name: ghcr.io/ainz05/portfolio
 
