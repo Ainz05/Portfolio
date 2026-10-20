@@ -14,4 +14,10 @@ export const hero: HeroContent = {
     href: '[À COMPLÉTER : fichier du CV (PDF) dans frontend/public/cv/]',
   },
   photoPlaceholder: '[Ta photo ici]',
+  photo: {
+    file: 'florian.webp',
+    alt: 'Portrait de Florian, cheveux bruns bouclés, lunettes transparentes et sweat noir',
+    width: 800,
+    height: 800,
+  },
 };
