@@ -14,7 +14,7 @@ export const projects: ProjectsContent = {
       title: 'Déployer une application React',
       label: 'Projet scolaire · DevOps',
       description:
-        "Je mets une application React en ligne de bout en bout : je la mets dans un conteneur avec Docker, je décris l'infrastructure avec Terraform sur AWS, et j'automatise les mises en ligne avec un pipeline CI/CD.",
+        "Je mets une application React en ligne : je la mets dans un conteneur avec Docker, je décris l'infrastructure avec Terraform sur AWS, et j'automatise les mises en ligne avec un pipeline CI/CD.",
       tags: ['Docker', 'AWS', 'Terraform', 'CI/CD'],
       links: [
         { label: 'Voir le code', href: REPOSITORY },
@@ -27,8 +27,8 @@ export const projects: ProjectsContent = {
       title: 'Un générateur de sites web',
       label: 'Projet perso · Hébergement',
       description:
-        'Une plateforme pour créer des sites web hébergés sur des machines virtuelles. Je la pense pour la production : je compare les hébergeurs sur le coût et la praticité avant de choisir.',
-      tags: ['Machines virtuelles', 'hébergement'],
+        'Saas-Orchestrator : plateforme d\'orchestration cloud et de déploiement automatisé de boutique de e-commerce (en cours de développement pour un vrai client).',
+      tags: ['Cloud', 'hébergement', 'Docker', 'Terraform', 'CI/CD'],
       links: [{ label: 'Voir le code', href: REPOSITORY }],
       screenshotPlaceholder: SCREENSHOT,
     },

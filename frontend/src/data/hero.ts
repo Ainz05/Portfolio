@@ -7,7 +7,7 @@ export const hero: HeroContent = {
   titleHighlight: 'Florian',
   titleAfter: '.',
   paragraph:
-    "Je suis étudiant en bac 3 en informatique, en Belgique. J'aime comprendre comment une application passe de mon ordinateur à un vrai serveur, et automatiser tout ce chemin. Je cherche un stage de 15 semaines en DevOps, IA ou MLOps, du côté de Charleroi, Mons ou Tournai.",
+    "Je suis étudiant en bac 3 en informatique, à la HELHa de Tournai. Je suis quelqu'un de sérieux dans son travail, qui aime comprendre comment les choses fonctionnent. Je cherche un stage de 15 semaines en DevOps ou en IA, du côté de Charleroi (je vis de ce côté), Mons ou Tournai.",
   primaryAction: { label: 'Me contacter', href: '#contact' },
   secondaryAction: {
     label: 'Télécharger mon CV',

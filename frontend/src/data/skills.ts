@@ -2,26 +2,26 @@ import type { SkillsContent } from '@/types/skill';
 
 export const skills: SkillsContent = {
   id: 'outils',
-  title: 'Avec quoi je travaille',
+  title: 'Avec quoi j’ai déjà travailler ?',
   columns: [
     {
       id: 'mettre-en-ligne',
       title: 'Mettre en ligne',
       description:
-        "Docker pour emballer une application, Terraform pour décrire l'infrastructure, AWS pour l'héberger.",
+        "Docker pour les conteneurs, Terraform et Ansible pour décrire et configurer l’infrastructure, AWS (ECR, IAM) et OVH pour l’héberger.",
     },
     {
       id: 'automatiser',
       title: 'Automatiser',
       description:
-        'Git pour suivre le code, des pipelines CI/CD pour tester et déployer sans y repenser à chaque fois.',
+        'Git pour suivre le code, Jenkins et GitHub Actions pour construire et déployer automatiquement à chaque modification. J’ai aussi utilisé les outils natifs d’AWS : CodePipeline, CodeBuild et CodeDeploy.',
     },
     {
       id: 'construire',
       title: 'Construire',
-      description: 'React et TypeScript pour le web, C# avec .NET MAUI et Flutter pour le mobile.',
+      description: 'React et TypeScript pour le web, C# avec .NET MAUI et Flutter pour le mobile. Python pour l`IA',
     },
   ],
   closing:
-    "L'IA et le MLOps m'attirent aussi : faire passer un modèle du carnet de notes à la production, de façon fiable.",
+    "L'IA et le MLOps m'attirent aussi : cours de machine et deep Learning en deuxième année. Actuellement en cours d'apprentissage du MLOps en autodidacte.",
 };

@@ -4,8 +4,8 @@ import { contactEmail } from './site';
 
 export const contact: ContactContent = {
   id: 'contact',
-  title: 'On discute ?',
-  text: "Si vous avez un stage de 15 semaines en DevOps, IA ou MLOps, j'aimerais beaucoup en parler.",
+  title: 'Pour me contacter',
+  text: "Si vous avez un stage de 15 semaines en DevOps ou en IA, j'aimerais beaucoup en parler.",
   emailLabel: contactEmail,
   emailContext: 'écrire à Florian',
   socialLinks: [
