@@ -2,7 +2,7 @@ services:
   docker:
     image: docker:dind
     container_name: jenkins-docker
-    privileged: true
+    privileged: true # Required for Docker-in-Docker
     restart: unless-stopped
     command: --storage-driver overlay2
     environment:
@@ -28,7 +28,7 @@ services:
       DOCKER_CERT_PATH: /certs/client
       DOCKER_TLS_VERIFY: "1"
     ports:
-      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:8081:8080" # Because port 8080 is already in use on the host machine, we map it to 8081 on the host.
     volumes:
       - jenkins-data:/var/jenkins_home
       - jenkins-docker-certs:/certs/client:ro
