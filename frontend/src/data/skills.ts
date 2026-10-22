@@ -23,5 +23,5 @@ export const skills: SkillsContent = {
     },
   ],
   closing:
-    "L'IA et le MLOps m'attirent aussi : cours de machine et deep Learning en deuxième année. Actuellement en cours d'apprentissage du MLOps en autodidacte.",
+    "L'IA et le MLOps m'attirent aussi : cours de machine et deep Learning en deuxième année. Actuellement en cours d'apprentissage du MLOps en autodidacte. Je peux également apprendre toute nouvelle technologie nécessaire.",
 };

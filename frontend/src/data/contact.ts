@@ -9,8 +9,8 @@ export const contact: ContactContent = {
   emailLabel: contactEmail,
   emailContext: 'écrire à Florian',
   socialLinks: [
-    { label: 'LinkedIn', href: '[À COMPLÉTER : URL LinkedIn]' },
-    { label: 'GitHub', href: '[À COMPLÉTER : URL GitHub]' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/florian-gypen-b6309b410' },
+    { label: 'GitHub', href: 'https://github.com/Ainz05' },
   ],
   footer: `© 2026 Florian ${lastName}`,
 };
