@@ -1,6 +1,6 @@
 import type { ProjectsContent } from '@/types/project';
 
-const SCREENSHOT = "[Capture d'écran du projet]";
+const SCREENSHOT = "[En Développement]";
 const REPOSITORY = '[À COMPLÉTER : URL du dépôt]';
 const DEMO = '[À COMPLÉTER : URL de la démo]';
 
@@ -14,11 +14,11 @@ export const projects: ProjectsContent = {
       title: 'Déployer une application React',
       label: 'Projet scolaire · DevOps',
       description:
-        "Je mets une application React en ligne : je la mets dans un conteneur avec Docker, je décris l'infrastructure avec Terraform sur AWS, et j'automatise les mises en ligne avec un pipeline CI/CD.",
+        "Mise en ligne d'une application React : Il s'agit d'un projet de groupe pour les cours. Je me suis occupé de la partie DevOps, c'est-à-dire de la mise en place d'un pipeline CI/CD pour déployer l'application sur AWS.",
       tags: ['Docker', 'AWS', 'Terraform', 'CI/CD'],
       links: [
-        { label: 'Voir le code', href: REPOSITORY },
-        { label: 'Voir la démo', href: DEMO },
+        { label: 'Voir le code', href: 'https://github.com/b-damien/DevOps1' },
+        { label: 'Voir la démo', href: 'https://youtu.be/ZnhLWX6Cv0w' },
       ],
       screenshotPlaceholder: SCREENSHOT,
       screenshot: {
@@ -46,8 +46,8 @@ export const projects: ProjectsContent = {
         'Un portfolio présentant quelques uns de mes différents projets. Déployer avec Terraform, Ansible et Jenkins sur un VPS OVH.',
       tags: ['React', 'Agentic coding', 'Docker', 'Terraform', 'Jenkins', 'CI/CD', 'Ansible', 'OVH'],
       links: [
-        { label: 'Voir le code', href: REPOSITORY },
-        { label: 'Voir la démo', href: DEMO },
+        { label: 'Voir le code', href: 'https://github.com/Ainz05/Portfolio' },
+        { label: 'Voir la démo', href: 'https://youtu.be/HcGuGhhlAmI' },
       ],
       screenshotPlaceholder: SCREENSHOT,
       screenshot: {
@@ -61,7 +61,7 @@ export const projects: ProjectsContent = {
       id: 'eventhub',
       title: 'Petit modèle d\'IA',
       label: 'Projet perso · IA',
-      description: "[À COMPLÉTER : une phrase sur ce que fait l'application]",
+      description: "[En cours]",
       tags: ['Machine Learning', 'Python', 'IA'],
       links: [
         { label: 'Voir le code', href: REPOSITORY },

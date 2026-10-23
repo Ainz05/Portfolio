@@ -10,6 +10,8 @@ import { allData, collectHrefs } from './dataCollectors.test-utils';
  * - GITHUB_ACCOUNT: your GitHub user name (for example 'florian-gypen'). Every github.com link
  *   must then start with https://github.com/<GITHUB_ACCOUNT>/. While it is empty, any real
  *   GitHub link makes the tests fail on purpose.
+ * - GITHUB_EXTRA_REPOS: repositories owned by someone else (a group project), as 'owner/repo'.
+ *   Only that exact repository is allowed, not the rest of the owner's account.
  * - DEMO_HOSTS: the domains where your project demos are hosted (for example
  *   'mon-projet.example.com'). Empty on purpose: add each domain deliberately.
  * - The CV: put the PDF in frontend/public/cv/ (for example florian-gypen.pdf) and use the link
@@ -19,8 +21,9 @@ import { allData, collectHrefs } from './dataCollectors.test-utils';
  * /in/<slug>, any mailto other than the one built from data/site.ts, other internal paths.
  * Placeholders ([À COMPLÉTER : …]) are accepted until you replace them.
  */
-const GITHUB_ACCOUNT = '';
-const DEMO_HOSTS: readonly string[] = [];
+const GITHUB_ACCOUNT = 'Ainz05';
+const GITHUB_EXTRA_REPOS: readonly string[] = ['b-damien/DevOps1'];
+const DEMO_HOSTS: readonly string[] = ['youtu.be'];
 
 const PLACEHOLDER = /^\[À COMPLÉTER : [^\]]+\]$/;
 const SHORTENER_HOSTS = ['bit.ly', 't.co', 'tinyurl.com', 'lnkd.in', 'goo.gl', 'ow.ly', 'is.gd'];
@@ -29,22 +32,34 @@ const LINKEDIN_PROFILE = /^\/in\/[A-Za-z0-9-]+\/?$/;
 
 interface LinkRules {
   readonly githubAccount: string;
+  readonly githubExtraRepos: readonly string[];
   readonly demoHosts: readonly string[];
   readonly cvFiles: readonly string[];
   readonly expectedMailto: string | null;
 }
 
-function pathProblem(url: URL, githubAccount: string): string | null {
+function isUnder(path: string, prefix: string): boolean {
+  const base = `/${prefix.toLowerCase()}`;
+  return path === base || path.startsWith(`${base}/`);
+}
+
+function githubProblem(pathname: string, rules: LinkRules): string | null {
+  if (rules.githubAccount === '') {
+    return 'GITHUB_ACCOUNT is empty: set it in links.test.ts before adding GitHub links';
+  }
+  const path = pathname.toLowerCase();
+  const allowed = [rules.githubAccount, ...rules.githubExtraRepos].some((prefix) =>
+    isUnder(path, prefix),
+  );
+  return allowed ? null : 'GitHub account not allowed';
+}
+
+function pathProblem(url: URL, rules: LinkRules): string | null {
   if (url.pathname.includes('%') && PROFILE_HOSTS.includes(url.hostname)) {
     return 'encoded characters in the path';
   }
   if (url.hostname === 'github.com') {
-    const prefix = `/${githubAccount.toLowerCase()}`;
-    const path = url.pathname.toLowerCase();
-    if (githubAccount === '') {
-      return 'GITHUB_ACCOUNT is empty: set it in links.test.ts before adding GitHub links';
-    }
-    return path === prefix || path.startsWith(`${prefix}/`) ? null : 'GitHub account not allowed';
+    return githubProblem(url.pathname, rules);
   }
   if (url.hostname === 'www.linkedin.com') {
     return LINKEDIN_PROFILE.test(url.pathname) ? null : 'LinkedIn page is not /in/<slug>';
@@ -64,7 +79,7 @@ function httpsProblem(safe: string, rules: LinkRules): string | null {
   if (url.port !== '' || url.search !== '' || url.hash !== '') {
     return 'port, query string or fragment';
   }
-  return pathProblem(url, rules.githubAccount);
+  return pathProblem(url, rules);
 }
 
 function internalProblem(href: string, cvFiles: readonly string[]): string | null {
@@ -99,12 +114,14 @@ function linkProblem(href: string, rules: LinkRules): string | null {
 const cvFiles = Object.keys(import.meta.glob('../../public/cv/*'));
 const realRules: LinkRules = {
   githubAccount: GITHUB_ACCOUNT,
+  githubExtraRepos: GITHUB_EXTRA_REPOS,
   demoHosts: DEMO_HOSTS,
   cvFiles,
   expectedMailto: buildMailto({ to: contactEmail, subject: contactSubject }),
 };
 const testRules: LinkRules = {
   githubAccount: 'compte-test',
+  githubExtraRepos: ['autre/projet'],
   demoHosts: [],
   cvFiles: ['../../public/cv/cv.pdf'],
   expectedMailto: 'mailto:a@example.com',
@@ -153,6 +170,12 @@ describe('link rules', () => {
   it('fails clearly while GITHUB_ACCOUNT is empty', () => {
     const rules = { ...testRules, githubAccount: '' };
     expect(linkProblem('https://github.com/x/y', rules)).toContain('GITHUB_ACCOUNT');
+  });
+
+  it('allows a declared extra repository only, not the rest of its owner', () => {
+    expect(linkProblem('https://github.com/autre/projet', testRules)).toBeNull();
+    expect(linkProblem('https://github.com/autre/projet-bis', testRules)).not.toBeNull();
+    expect(linkProblem('https://github.com/autre', testRules)).not.toBeNull();
   });
 
   it('allows a declared demo host only', () => {
