@@ -11,7 +11,7 @@ export const hero: HeroContent = {
   primaryAction: { label: 'Me contacter', href: '#contact' },
   secondaryAction: {
     label: 'Télécharger mon CV',
-    href: '[À COMPLÉTER : fichier du CV (PDF) dans frontend/public/cv/]',
+    href: '/cv/florian-gypen.pdf',
   },
   photoPlaceholder: '[Ta photo ici]',
   photo: {

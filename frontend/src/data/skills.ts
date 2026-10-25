@@ -8,7 +8,7 @@ export const skills: SkillsContent = {
       id: 'mettre-en-ligne',
       title: 'Mettre en ligne',
       description:
-        "Docker pour les conteneurs, Terraform et Ansible pour décrire et configurer l’infrastructure, AWS (ECR, IAM) et OVH pour l’héberger.",
+        'Docker pour les conteneurs, Terraform et Ansible pour décrire et configurer l’infrastructure, AWS (ECR, IAM) et OVH pour l’héberger.',
     },
     {
       id: 'automatiser',
@@ -19,7 +19,8 @@ export const skills: SkillsContent = {
     {
       id: 'construire',
       title: 'Construire',
-      description: 'React et TypeScript pour le web, C# avec .NET MAUI et Flutter pour le mobile. Python pour l`IA',
+      description:
+        'React et TypeScript pour le web, C# avec .NET MAUI et Flutter pour le mobile. Python pour l`IA',
     },
   ],
   closing:

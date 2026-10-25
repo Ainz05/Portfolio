@@ -47,10 +47,8 @@ function githubProblem(pathname: string, rules: LinkRules): string | null {
   if (rules.githubAccount === '') {
     return 'GITHUB_ACCOUNT is empty: set it in links.test.ts before adding GitHub links';
   }
-  const path = pathname.toLowerCase();
-  const allowed = [rules.githubAccount, ...rules.githubExtraRepos].some((prefix) =>
-    isUnder(path, prefix),
-  );
+  const prefixes = [rules.githubAccount, ...rules.githubExtraRepos];
+  const allowed = prefixes.some((prefix) => isUnder(pathname.toLowerCase(), prefix));
   return allowed ? null : 'GitHub account not allowed';
 }
 
