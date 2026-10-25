@@ -14,7 +14,7 @@ export const projects: ProjectsContent = {
       title: 'Déployer une application React',
       label: 'Projet scolaire · DevOps',
       description:
-        "Mise en ligne d'une application React : Il s'agit d'un projet de groupe pour les cours. Je me suis occupé de la partie DevOps, c'est-à-dire de la mise en place d'un pipeline CI/CD pour déployer l'application sur AWS.",
+        "Mise en ligne d'une application React : il s'agit d'un projet de groupe pour les cours. Je me suis occupé de la partie DevOps, c'est-à-dire de la mise en place d'un pipeline CI/CD pour déployer l'application sur AWS.",
       tags: ['Docker', 'AWS', 'Terraform', 'CI/CD'],
       links: [
         { label: 'Voir le code', href: 'https://github.com/b-damien/DevOps1' },
@@ -33,8 +33,8 @@ export const projects: ProjectsContent = {
       title: 'Un générateur de sites web',
       label: 'Projet perso · Hébergement',
       description:
-        "Saas-Orchestrator : plateforme d'orchestration cloud et de déploiement automatisé de boutique de e-commerce (en cours de développement pour un vrai client).",
-      tags: ['Cloud', 'hébergement', 'Docker', 'Terraform', 'CI/CD'],
+        "Saas-Orchestrator : plateforme d'orchestration cloud et de déploiement automatisé de boutiques e-commerce (en cours de développement pour un vrai client).",
+      tags: ['Cloud', 'Hébergement', 'Docker', 'Terraform', 'CI/CD'],
       links: [{ label: 'Voir le code', href: REPOSITORY }],
       screenshotPlaceholder: SCREENSHOT,
     },
@@ -43,7 +43,7 @@ export const projects: ProjectsContent = {
       title: 'Mon portfolio',
       label: 'Projet perso',
       description:
-        'Un portfolio présentant quelques uns de mes différents projets. Déployer avec Terraform, Ansible et Jenkins sur un VPS OVH.',
+        'Un portfolio présentant quelques-uns de mes différents projets. Déployé avec Terraform, Ansible et Jenkins sur un VPS OVH.',
       tags: [
         'React',
         'Agentic coding',
