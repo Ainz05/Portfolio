@@ -5,7 +5,7 @@ import { contactEmail } from './site';
 export const contact: ContactContent = {
   id: 'contact',
   title: 'Pour me contacter',
-  text: "Si vous avez un stage de 15 semaines en DevOps ou en IA, j'aimerais beaucoup en parler.",
+  text: "Si vous avez un stage de 15 semaines en administration système, j'aimerais beaucoup en parler.",
   emailLabel: contactEmail,
   emailContext: 'écrire à Florian',
   socialLinks: [
